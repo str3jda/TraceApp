@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{c1e7542d-b718-4edb-b00f-ff05a0bb572c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{04a7c788-81b3-4788-9d68-ac567b71a34c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Listeners">
+      <UniqueIdentifier>{01545140-aecc-4c16-b40b-9f383400ebc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Messages">
+      <UniqueIdentifier>{fddc4ff0-2bcc-4796-9652-f73d72927923}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{f2ad24e9-6fa4-42fa-9205-f5b52d76d126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd">
+      <UniqueIdentifier>{c5121d43-3b28-47c5-b1f1-1b96e1b8f0ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rd\vjson">
+      <UniqueIdentifier>{3a05cdd0-8638-4d87-a04d-579c65fcd2f6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp" />
+    <ResourceCompile Include="TraceServer.rc" />
+    <None Include="Resources\error.ico">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="Resources\info.ico">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="Resources\TracerServer.ico">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="Resources\warning.ico">
+      <Filter>Resources</Filter>
+    </None>
+    <ClCompile Include="UI\FilterOptions.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\FormatedRenderer.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\mainwindow.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\SettingsDialog.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\TabModel.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\wxNotebookEx.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Tray.cpp" />
+    <ClCompile Include="Messages\MessagePump.cpp">
+      <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Messages\Message.cpp">
+      <Filter>Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="Listeners\UDPMulticastListener.cpp">
+      <Filter>Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="Listeners\LocalPipeListener.cpp">
+      <Filter>Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientOverseer.cpp" />
+    <ClCompile Include="Listeners\MQTTListener.cpp">
+      <Filter>Listeners</Filter>
+    </ClCompile>
+    <ClCompile Include="3rd\include\vjson\json.cpp">
+      <Filter>3rd\vjson</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\StackWalker.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="UI\FilterOptions.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\FormatedRenderer.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\mainwindow.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\SettingsDialog.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\TabModel.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\wxNotebookEx.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Tray.h" />
+    <ClInclude Include="UI\Resource.h" />
+    <ClInclude Include="Messages\MessagePump.h">
+      <Filter>Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="Messages\Message.h">
+      <Filter>Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="Listeners\UDPMulticastListener.h">
+      <Filter>Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="Listeners\LocalPipeListener.h">
+      <Filter>Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientOverseer.h" />
+    <ClInclude Include="Utilities\Dequeue.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Listeners\MQTTListener.h">
+      <Filter>Listeners</Filter>
+    </ClInclude>
+    <ClInclude Include="3rd\include\vjson\json.h">
+      <Filter>3rd\vjson</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\StackWalker.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
