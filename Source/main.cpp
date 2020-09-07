@@ -2,6 +2,8 @@
 #include "UI/mainwindow.h"
 #include "Utilities/StackWalker.h"
 
+#include <csignal>
+
 class C_TraceServerApp : public wxApp
 {
 public:
@@ -80,9 +82,34 @@ long OnCrash( _EXCEPTION_POINTERS* exceptionInfo )
 
 // -------------------------------------------------------------------------------------------------------------------------
 
+void SignalHandler( int signal )
+{
+	//volatile std::sig_atomic_t.
+
+	time_t t;
+	time( &t );
+
+	struct tm* ti = localtime( &t );
+
+	char file_path[ 256 ];
+	sprintf_s( file_path, "crash %d.%d.%d %d.%d.%d.txt", ti->tm_mday, ti->tm_mon, 1900 + ti->tm_year, ti->tm_hour, ti->tm_min, ti->tm_sec );
+
+	FILE* f = fopen( file_path, "w" );
+	fprintf( f, "REASON: signal:%d\n", signal );
+
+	fputs( "CALLSTACK:\n", f );
+	C_AssertStackWalker sw( f );
+	sw.ShowCallstack();
+
+	fclose( f );
+}
+
+// -------------------------------------------------------------------------------------------------------------------------
+
 bool C_TraceServerApp::OnInit()
 {
-	SetUnhandledExceptionFilter( &OnCrash );
+	std::signal( SIGSEGV, &SignalHandler );
+	std::signal( SIGFPE, &SignalHandler );	
 
 	if (!wxApp::OnInit())
 	{

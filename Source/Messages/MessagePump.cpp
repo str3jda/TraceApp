@@ -11,8 +11,8 @@ bool C_MessagePump::Init()
 	m_PipeSource = new C_LocalPipeListener();
 	bool rv = m_PipeSource->Init( this );
 
-	m_UDPSource = new C_UDPMulticastListener();
-	rv = m_UDPSource->Init( this ) && rv;
+	//m_UDPSource = new C_UDPMulticastListener();
+	//rv = m_UDPSource->Init( this ) && rv;
 
 	char hostname[64];
 	int result = gethostname(hostname, sizeof(hostname));
@@ -35,9 +35,9 @@ void C_MessagePump::Deinit()
 	delete m_MQTTSource;
 	m_MQTTSource = nullptr;
 
-	m_UDPSource->Deinit();
-	delete m_UDPSource;
-	m_UDPSource = nullptr;
+	//m_UDPSource->Deinit();
+	//delete m_UDPSource;
+	//m_UDPSource = nullptr;
 
 	m_PipeSource->Done();
 	delete m_PipeSource;

@@ -99,10 +99,23 @@ void C_ClientOverseer::Tick()
 				break;
 
 			case trace::TMT_NewThread:
+			{
 				// Custom mapping from thread-id to thread-name
-				client.m_ThreadNames[msg->m_Thread] = msg->m_Msg;
+				auto it = std::find_if( client.m_ThreadNames.begin(), client.m_ThreadNames.end(), [msg]( auto const& p ){ return p.second == msg->m_Msg; } );
+				if ( it != client.m_ThreadNames.end() )
+				{
+					std::string name = std::move( it->second );
+					client.m_ThreadNames.erase( it );
+					client.m_ThreadNames.emplace( msg->m_Thread, std::move( name ) );
+				}
+				else
+				{
+					client.m_ThreadNames[ msg->m_Thread ] = msg->m_Msg;
+				}
+
 				SaveSourceMap();
 				break;
+			}
 		}
 		
 	} );
@@ -162,12 +175,17 @@ void C_ClientOverseer::SaveSourceMap()
 	FILE* f = fopen( SOURCE_MAP_FILE, "wb" );
 	if ( f != nullptr )
 	{
-		uint16_t clLen = static_cast<uint16_t>( m_Clients.size() );
+		uint16_t clLen = static_cast<uint16_t>( m_Clients.size() - 1 );
 		fwrite( &clLen, sizeof(uint16_t), 1, f );
 
 		for ( auto const& p : m_Clients )
 		{
 			S_Client const& client = p.second;
+			if ( p.first == 0 )
+			{
+				continue;
+			}
+
 			fwrite( &p.first, sizeof( T_SourceID ), 1, f );
 
 			uint8_t len = static_cast<uint8_t>( client.m_AppName.length() );

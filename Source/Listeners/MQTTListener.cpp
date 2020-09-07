@@ -231,6 +231,7 @@ void C_MQTTListener::ThreadProc()
 
 	bool firstConnect = true;
 	bool doReport = true;
+	DWORD lostConnectionTime = 0;
 
 	while ( !m_Exit )
 	{
@@ -243,14 +244,18 @@ void C_MQTTListener::ThreadProc()
 				sprintf_s( buf, "Lost connection to MQTT broker at %s!", m_MQTTBroker.c_str() );
 
 				SysMessage( trace::TMT_Warning, buf );
+
+				lostConnectionTime = GetTickCount();
 			}
 
 			if ( Connect() )
 			{
 				if ( !firstConnect )
 				{
+					DWORD regainConnectionTime = GetTickCount();
+
 					char buf[128];
-					sprintf_s( buf, "Connection to MQTT broker %s re-established!", m_MQTTBroker.c_str() );
+					sprintf_s( buf, "Connection to MQTT broker %s re-established in %.1fs!", m_MQTTBroker.c_str(), ( regainConnectionTime - lostConnectionTime ) * 1e-3f );
 					SysMessage( trace::TMT_Information, buf );
 				}
 
