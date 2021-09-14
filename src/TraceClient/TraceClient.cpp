@@ -11,74 +11,74 @@
 #define TRACER_SYNC_NAME "traceserver"
 #define TRACER_PIPE_NAME "\\\\.\\pipe\\tracepipe"
 
-namespace trace {
+namespace trace_client {
 
-	C_TraceClient::C_TraceClient()
-		: m_Pipe(INVALID_HANDLE_VALUE)
+	// System message types 
+	static TracedMessageType const TMT_Greetings	= 0x08;
+	static TracedMessageType const TMT_Farewell		= 0x10;
+	static TracedMessageType const TMT_NewThread	= 0x20;
+
+	TraceClient::TraceClient()
+		: m_Pipe( INVALID_HANDLE_VALUE )
 	{
 	}
 
-	C_TraceClient::~C_TraceClient()
+	TraceClient::~TraceClient()
 	{
-		if (INVALID_HANDLE_VALUE != m_Pipe)
+		if ( m_Pipe != INVALID_HANDLE_VALUE )
 		{
 			CloseHandle(m_Pipe); 
 		}
 	}
 
-	bool C_TraceClient::Connect( T_TraceAppID appId )
+	bool TraceClient::Connect( TraceAppID _srcId, char const* _app_name )
 	{
-		if (!CreatePipe())
+		if ( !CreatePipe() )
 		{
 			return false;
 		}
 
-		// send greetings message
-		char appName[MAX_PATH];
-		char* toSend;
+		char app_name_buffer[ MAX_PATH ];
+		char const* app_name_to_send = _app_name;
+
 #ifdef TS_PLATFORM_WINDOWS
-		GetModuleFileNameA(0, appName, MAX_PATH);
+		if ( app_name_to_send == nullptr )
+		{
+			GetModuleFileNameA( 0, app_name_buffer, MAX_PATH );
+
+			app_name_to_send = app_name_buffer;
+
+			char const* delim = strrchr( app_name_to_send, '\\' );
+			if ( delim != nullptr )
+			{
+				app_name_to_send = delim + 1;
+			}
+		}
 #else
 #  error get app name somehow
-#endif // #ifdef WIN32
-		char* sz = strrchr(appName,'\\');
-		if (sz)
-		{
-			toSend = sz + 1;
-		}
-		else
-		{
-			toSend = appName;
-		}
-
-		m_AppID = appId;
+#endif
+		
+		m_AppID = _srcId;
     
-		if (!LogMessage(TMT_Greetings, toSend, nullptr, nullptr, 0))
-		{
-			return false;
-		}
-
-		return true;
+		return LogMessage( TMT_Greetings, app_name_to_send, nullptr, nullptr, 0 );
 	}
 
-	void C_TraceClient::Disconnect()
+	void TraceClient::Disconnect()
 	{
 #ifdef TS_PLATFORM_WINDOWS
-		if (INVALID_HANDLE_VALUE != m_Pipe)
+		if ( m_Pipe != INVALID_HANDLE_VALUE )
 		{
-			// send farewell message
-			LogMessage(TMT_Farewell, nullptr, nullptr, nullptr, 0);
-			//FlushFileBuffers(m_Pipe);
-
-			CloseHandle(m_Pipe);
+			LogMessage( TMT_Farewell, nullptr, nullptr, nullptr, 0 );
+		
+			CloseHandle( m_Pipe );
 			m_Pipe = INVALID_HANDLE_VALUE;
 		}
 #endif
 	}
 
-	bool C_TraceClient::CreatePipe()
+	bool TraceClient::CreatePipe()
 	{
-#ifdef WIN32
+#ifdef TS_PLATFORM_WINDOWS
 		while ( true )
 		{
 			m_Pipe = CreateFileA(
@@ -90,24 +90,24 @@ namespace trace {
 				0,
 				NULL);
 
-			if (m_Pipe != INVALID_HANDLE_VALUE) 
+			if ( m_Pipe != INVALID_HANDLE_VALUE ) 
 			{
 				break;
 			}
 
-			if (GetLastError() != ERROR_PIPE_BUSY)
+			if ( GetLastError() != ERROR_PIPE_BUSY )
 			{ // Failed to create pipe
 				return false;
 			}
 
-			if (!WaitNamedPipeA(TRACER_PIPE_NAME, 5000))
+			if ( !WaitNamedPipeA( TRACER_PIPE_NAME, 5000 ) )
 			{
 				return false;
 			}
 		}
 
 		DWORD dwMode = PIPE_READMODE_MESSAGE; 
-		BOOL success = SetNamedPipeHandleState(m_Pipe, &dwMode, NULL, NULL);
+		BOOL success = SetNamedPipeHandleState( m_Pipe, &dwMode, NULL, NULL );
 		if (!success) 
 		{
 			return false;
@@ -119,9 +119,14 @@ namespace trace {
 #endif
 	}
 
-	bool C_TraceClient::LogMessage( E_TracedMessageType inType, const char* inMessage, const char* inFile, const char* inFunction, unsigned int inLine)
+	void TraceClient::ReportNewThread( char const* _thread_name )
 	{
-		if (INVALID_HANDLE_VALUE == m_Pipe)
+		LogMessage( TMT_NewThread, _thread_name, nullptr, nullptr, 0 );
+	}
+
+	bool TraceClient::LogMessage( TracedMessageType _type, char const* _message, char const* _file, char const* _function, unsigned int _line )
+	{
+		if ( m_Pipe == INVALID_HANDLE_VALUE )
 		{
 			return false;
 		}
@@ -131,54 +136,69 @@ namespace trace {
 		uint8_t buffer[1024];
 		uint8_t* p = buffer;
 
-		*reinterpret_cast<uint32_t*>( p ) = m_AppID;	p += sizeof( uint32_t );
+		*reinterpret_cast<uint32_t*>( p ) = m_AppID;
+		p += sizeof( uint32_t );
 	
-		*p = inType;        ++p;
+		*p = _type;      
+		++p;
 
-		uint32_t lenMsg		= ( uint32_t )strlen(inMessage);
-		uint32_t lenFile	= ( uint32_t )strlen(inFile);
-		uint32_t lenFn		= ( uint32_t )strlen(inFunction);
+		uint32_t lenMsg		= ( _message != nullptr ) ? ( uint32_t )strlen( _message ) : 0;
+		uint32_t lenFile	= ( _file != nullptr ) ? ( uint32_t )strlen( _file ) : 0;
+		uint32_t lenFn		= ( _function != nullptr ) ? ( uint32_t )strlen( _function ) : 0;
 
-		if (nullptr != inFile)
+		if ( _file != nullptr )
 		{
-			char const* end = inFile + lenFile;
-			while (end >= inFile && *end != '\\')
+			char const* delim = strrchr( _file, '\\' );
+			if ( delim != nullptr )
 			{
-				--end;
-			}
-
-			if (end != inFile)
-			{
-				lenFile -= ( uint32_t )(end - inFile + 1);
-				inFile = end + 1;
-			}
-			else
-			{
-				lenFile -= ( uint32_t )(end - inFile);
+				lenFile -= static_cast< uint32_t >( ( delim - _file ) + 1 );
+				_file = delim + 1;
 			}
 		}
 
-		if (lenMsg >= 0xffff || lenFile >= 0xff || lenFn >= 0xff || 
-			( lenMsg  + lenFile + lenFn + 21 ) > sizeof( buffer ) )
+		if ( ( lenMsg >= 0xffff ) || ( lenFile >= 0xff ) || ( lenFn >= 0xff ) || 
+			( lenMsg  + lenFile + lenFn + 25 ) > sizeof( buffer ) )
 		{
 			return false;
 		}
     
-		*reinterpret_cast<uint16_t*>(p) = ( uint16_t )lenMsg;	p += sizeof( uint16_t );
-		*reinterpret_cast<uint8_t*>(p) = ( uint8_t )lenFile;	p += sizeof( uint8_t );
-		*reinterpret_cast<uint8_t*>(p) = ( uint8_t )lenFn;		p += sizeof( uint8_t );
-	
-		memcpy(p, inMessage, lenMsg);				p += lenMsg;
-		memcpy(p, inFile, lenFile);					p += lenFile;
-		memcpy(p, inFunction, lenFn);				p += lenFn;
+		*reinterpret_cast<uint16_t*>(p) = ( uint16_t )lenMsg;
+		p += sizeof( uint16_t );
 
-		*reinterpret_cast<uint32_t*>(p) = inLine;		p += sizeof( uint32_t );
-		*reinterpret_cast<uint32_t*>(p) = threadId;		p += sizeof( uint32_t );
+		*reinterpret_cast<uint8_t*>(p) = ( uint8_t )lenFile;
+		p += sizeof( uint8_t );
+
+		*reinterpret_cast<uint8_t*>(p) = ( uint8_t )lenFn;
+		p += sizeof( uint8_t );
+	
+		if ( lenMsg > 0 )
+		{
+			memcpy(p, _message, lenMsg);
+			p += lenMsg;
+		}
+
+		if ( lenFile > 0 )
+		{
+			memcpy( p, _file, lenFile );
+			p += lenFile;
+		}
+
+		if ( lenFn > 0 )
+		{
+			memcpy( p, _function, lenFn );
+			p += lenFn;
+		}
+
+		*reinterpret_cast<uint32_t*>(p) = _line;
+		p += sizeof( uint32_t );
+
+		*reinterpret_cast<uint32_t*>(p) = threadId;
+		p += sizeof( uint32_t );
 
 		uint64_t* t = reinterpret_cast<uint64_t*>(p);
 		*t = 0;
-
-		time(reinterpret_cast<time_t*>(t));			p += sizeof( uint64_t );
+		time(reinterpret_cast<time_t*>(t));
+		p += sizeof( uint64_t );
     
 		DWORD written;
 		DWORD toWrite = (DWORD)(p - buffer);

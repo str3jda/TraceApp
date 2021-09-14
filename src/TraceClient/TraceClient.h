@@ -1,28 +1,27 @@
 #pragma once
+
 #include <stdint.h>
 
+ namespace trace_client {
 
- namespace trace {
+	 using TraceAppID = uint32_t;
+	 using TracedMessageType = uint8_t;
 
-	 typedef uint32_t T_TraceAppID;
-	 typedef unsigned char E_TracedMessageType;
-	 static E_TracedMessageType const TMT_Information = 1 << 0;
-	 static E_TracedMessageType const TMT_Warning = 1 << 1;
-	 static E_TracedMessageType const TMT_Error = 1 << 2;
-	 static E_TracedMessageType const TMT_Greetings = 1 << 3;
-	 static E_TracedMessageType const TMT_Farewell = 1 << 4;
-	 static E_TracedMessageType const TMT_NewThread = 1 << 5;
+	 static TracedMessageType const TMT_Information		= 0x01;
+	 static TracedMessageType const TMT_Warning			= 0x02;
+	 static TracedMessageType const TMT_Error			= 0x04;
 
-	 class C_TraceClient
+	 class TraceClient
 	 {
 	 public:
-		 C_TraceClient();
-		 ~C_TraceClient();
+		 TraceClient();
+		 ~TraceClient();
 
-		 bool Connect( T_TraceAppID srcId  );
+		 bool Connect( TraceAppID _srcId, char const* _app_name = nullptr );
 		 void Disconnect();
 
-		 bool LogMessage( E_TracedMessageType inType, const char* inMessage, const char* inFile, const char* inFunction, unsigned int inLine );
+		 void ReportNewThread( char const* _thread_name );
+		 bool LogMessage( TracedMessageType _type, char const* _message, char const* _file, char const* _function, unsigned int _line );
 
 	 private:
 
@@ -31,7 +30,7 @@
 	 private:
 
 		 void* m_Pipe;
-		 T_TraceAppID m_AppID;
+		 TraceAppID m_AppID;
 	 };
 
 }
