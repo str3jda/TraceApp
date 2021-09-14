@@ -1,7 +1,7 @@
 
 workspace "TraceServer"
    
-    configurations { "Develop", "Release" }
+    configurations { "Debug", "Release" }
     architecture "x86_64"
     platforms { "Win64", "Linux" }
     cppdialect "C++17"
