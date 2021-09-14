@@ -1,5 +1,5 @@
 
-workspace "TraceServer"
+workspace "TraceApp"
    
     configurations { "Debug", "Release" }
     architecture "x86_64"
@@ -52,9 +52,9 @@ workspace "TraceServer"
             "NDEBUG"
         }
 
-project "Server"
+project "TraceServer"
     kind "WindowedApp"
-    files { "src/Server/**.h", "src/Server/**.cpp" }
+    files { "src/TraceServer/**.h", "src/TraceServer/**.cpp" }
 
     -- TODO: 3rd is completely unhandled
 
@@ -63,6 +63,6 @@ project "Server"
         "src/Server",
     }
 
-project "Client"
+project "TraceClient"
     kind "StaticLib"
-    files { "src/Client/**.h", "src/Client/**.cpp" }
+    files { "src/TraceClient/**.h", "src/TraceClient/**.cpp" }
