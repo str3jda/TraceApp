@@ -1,11 +1,5 @@
-*.lib
-*.exe
-*.pdb
-*.ilk
-*.user
-*.trace
-
-Source/3rd/src/**
-Source/.vs/**
-bin/Temp/**
-
+bin/
+build/
+.vs/
+3rd/
+libs/
