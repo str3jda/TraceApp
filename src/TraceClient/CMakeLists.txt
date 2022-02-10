@@ -1,7 +1,7 @@
 
 add_library(TraceClient STATIC)
 
-target_include_directories(TraceClient INTERFACE "${PROJECT_SOURCE_DIR}/src/TraceClient")
+target_include_directories(TraceClient INTERFACE "${PROJECT_SOURCE_DIR}/src")
 target_sources(TraceClient PRIVATE "${PROJECT_SOURCE_DIR}/src/TraceClient/TraceClient.cpp")
 
 # Platform specific macros
