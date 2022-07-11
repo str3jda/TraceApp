@@ -5,6 +5,7 @@
 #include "../Tray.h"
 
 #include <unordered_map>
+#include <mutex>
 
 class C_TabModel;
 class C_MsgFilter;
@@ -21,7 +22,9 @@ public:
 	C_MainWindow();
     ~C_MainWindow();
 
-    wxIcon const& GetIcon(trace::E_TracedMessageType inType);
+	void Init();
+
+    wxIcon const& GetIcon(trace::TracedMessageType inType);
 
 	void ShowSettingsDialog();
 	void ToggleAutoScroll();
@@ -31,7 +34,7 @@ public:
 	void OnMessageFarewell( T_SourceID id );
 	void OnTraceMessage( S_Message const& msg, char const* threadName );
 
-	void LogSystemMessage( char const* text, trace::E_TracedMessageType type = trace::TMT_Information );
+	void LogSystemMessage( char const* text, trace::TracedMessageType type = trace::TMT_Information );
 
 private:
 
@@ -73,7 +76,7 @@ private:
 		char				m_MQTTBroker[64];
 	};
 
-	C_ClientOverseer* m_Overseer;
+	C_ClientOverseer* 	m_Overseer = nullptr;
     C_Tray				m_Tray;
 
 	S_SettingParams		m_CurrentSetting;
@@ -92,13 +95,17 @@ private:
 
     wxIcon				m_MsgIcons[3];
 
-	C_TabModel*			m_TabToRefresh;
+	C_TabModel*			m_TabToRefresh = nullptr;
 
 	struct
 	{
 //		wxSizer*		m_Sizer;
 		wxAuiNotebook*	m_TabControl;
 	}					m_UI;
+
+	std::thread::id m_UiThreadId;
+	std::mutex m_PendingSysMessagesMutex;
+	std::vector< S_Message* > m_PendingSysMessages;
 
 	wxDECLARE_EVENT_TABLE();
 };

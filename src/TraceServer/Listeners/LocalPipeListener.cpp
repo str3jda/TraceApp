@@ -2,6 +2,7 @@
 #include "LocalPipeListener.h"
 #include "../Messages/Message.h"
 #include "../Messages/MessagePump.h"
+#include <TraceCommon/Config.h>
 
 //--------------------------------------------------------------------------------------------------------------------------
 

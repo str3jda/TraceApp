@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [        
+        {
+            "name": "Win Launch",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}\\build\\src\\TraceServer\\Debug\\TraceServer.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}\\bin",
+            "environment": [],
+            "console": "integratedTerminal"
+        }
+    ]
+}

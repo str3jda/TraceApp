@@ -41,7 +41,6 @@ private:
 
 	wxTextCtrl*			m_MessageFilterCntrl;
 	wxCheckBox*			m_MessageCaseSensitiveChck;
-	wxCheckBox*			m_MessageRegexChck;
 
 	wxCheckBox*			m_TypeFilterChck_Info;
 	wxCheckBox*			m_TypeFilterChck_Warning;

@@ -50,52 +50,14 @@ namespace details {
 
 // -------------------------------------------------------------------------------------------------------------------------
 
-C_MsgFilter::C_MsgFilter()
-	: m_RegExpr( nullptr )
-{
-}
-
-// -------------------------------------------------------------------------------------------------------------------------
-
-C_MsgFilter::~C_MsgFilter()
-{
-	if ( m_RegExpr != nullptr )
-	{
-		tre_regfree( m_RegExpr );
-		delete m_RegExpr;
-	}
-}
-
-// -------------------------------------------------------------------------------------------------------------------------
-
 bool C_MsgFilter::Apply( S_FilterOptions const& options )
 {
 	if ( m_CurrentOptions.m_CaseSensitive == options.m_CaseSensitive &&
-		 m_CurrentOptions.m_Regex == options.m_Regex &&
 		 m_CurrentOptions.m_Text == options.m_Text && 
 		 m_CurrentOptions.m_MsgLimit == options.m_MsgLimit &&
 		 m_CurrentOptions.m_TypeFlags == options.m_TypeFlags )
 	{
 		return false;
-	}
-
-	if ( m_RegExpr != nullptr )
-	{
-		tre_regfree( m_RegExpr );
-		delete m_RegExpr;
-		m_RegExpr = nullptr;
-	}
-
-	if ( options.m_Regex )
-	{
-		m_RegExpr = new regex_t();
-
-		if ( REG_OK != tre_regcomp( m_RegExpr, options.m_Text.c_str(), REG_EXTENDED | ( options.m_CaseSensitive ? 0 : REG_ICASE ) ) )
-		{
-			delete m_RegExpr;
-			m_RegExpr = nullptr;
-			return false;
-		}
 	}
 
 	m_CurrentOptions = options;
@@ -108,7 +70,7 @@ bool C_MsgFilter::Apply( S_FilterOptions const& options )
 
 // -------------------------------------------------------------------------------------------------------------------------
 
-bool C_MsgFilter::FilterMsgText( wxString const& txt, trace::E_TracedMessageType type ) const
+bool C_MsgFilter::FilterMsgText( wxString const& txt, trace::TracedMessageType type ) const
 {
 	if ( ( m_CurrentOptions.m_TypeFlags & type ) == 0 )
 	{
@@ -117,14 +79,7 @@ bool C_MsgFilter::FilterMsgText( wxString const& txt, trace::E_TracedMessageType
 
 	if ( !m_CurrentOptions.m_Text.empty() )
 	{
-		if ( m_CurrentOptions.m_Regex )
-		{
-			if ( REG_NOMATCH == tre_regexec( m_RegExpr, txt.c_str().AsChar(), 0, nullptr, 0 ) )
-			{
-				return false;
-			}
-		}
-		else if ( m_CurrentOptions.m_CaseSensitive )
+		if ( m_CurrentOptions.m_CaseSensitive )
 		{
 			if ( details::find_text( txt.c_str().AsChar(), txt.length(), m_CurrentOptions.m_Text.c_str() ) == nullptr )
 			{

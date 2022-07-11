@@ -1,4 +1,5 @@
 #include "TraceClient.h"
+#include <TraceCommon/Config.h>
 
 #ifdef TS_PLATFORM_WINDOWS
 #	define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
@@ -6,17 +7,9 @@
 #endif
 
 #include <time.h>
-#include <stdint.h>
 
-#define TRACER_SYNC_NAME "traceserver"
-#define TRACER_PIPE_NAME "\\\\.\\pipe\\tracepipe"
-
-namespace trace_client {
-
-	// System message types 
-	static TracedMessageType const TMT_Greetings	= 0x08;
-	static TracedMessageType const TMT_Farewell		= 0x10;
-	static TracedMessageType const TMT_NewThread	= 0x20;
+namespace trace
+{
 
 	TraceClient::TraceClient()
 		: m_Pipe( INVALID_HANDLE_VALUE )

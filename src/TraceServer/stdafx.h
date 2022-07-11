@@ -19,7 +19,7 @@
 #include <tchar.h>
 #include <time.h>
 
-#include "Client/TraceClient.h"
+#include <TraceCommon/Common.h>
 
 typedef uint32_t T_SourceID;
 

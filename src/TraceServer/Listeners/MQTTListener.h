@@ -1,7 +1,7 @@
 #pragma once
 
 #include <thread>
-#include <paho-mqtt/MQTTClient.h>
+#include <MQTTClient.h>
 
 class C_MessagePump;
 
@@ -16,8 +16,8 @@ public:
 
 private:
 
-	void ParseAppMsg( trace::E_TracedMessageType type, char* msg, int msg_len );
-	void ParseTraceMsg( trace::E_TracedMessageType type, char* msg, int msg_len, char const* prefix = nullptr );
+	void ParseAppMsg( trace::TracedMessageType type, char* msg, int msg_len );
+	void ParseTraceMsg( trace::TracedMessageType type, char* msg, int msg_len, char const* prefix = nullptr );
 
 	void OnMessage( char *topicName, int topicLen, MQTTClient_message *message );
 
@@ -25,7 +25,7 @@ private:
 
 	void ThreadProc();
 
-	void SysMessage( trace::E_TracedMessageType type, char const* msg );
+	void SysMessage( trace::TracedMessageType type, char const* msg );
 
 private:
 
@@ -33,7 +33,6 @@ private:
 	MQTTClient m_Client;
 
 	bool m_Exit = false;
-	bool m_Finished = true;
 
 	std::string m_MQTTBroker;
 	std::string m_MQTTId;

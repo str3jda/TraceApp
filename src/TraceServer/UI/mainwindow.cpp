@@ -6,6 +6,7 @@
 #include "FormatedRenderer.h"
 #include "wxNotebookEx.h"
 #include "../ClientOverseer.h"
+#include <Utilities/assert.h>
 
 #define SETTINGS_CFG_FILE "setings.trace"
 
@@ -23,11 +24,34 @@ C_MainWindow::C_MainWindow()
 	, m_Tray( this )
 	, m_TabToRefresh(nullptr)
 	, m_MsgFilter( new C_MsgFilter() )
+	, m_UiThreadId( std::this_thread::get_id() )
 {  
-	m_Overseer = new C_ClientOverseer();
+}
 
+// -------------------------------------------------------------------------------------------------------------------------
+
+C_MainWindow::~C_MainWindow()
+{
+	m_TickTimer.Stop();
+
+    if (nullptr != m_Overseer )
+    {
+		m_Overseer->Deinit();
+        delete m_Overseer;
+    }
+
+	delete m_MsgFilter;
+
+	m_TabMap.clear();
+}
+
+// -------------------------------------------------------------------------------------------------------------------------
+
+void C_MainWindow::Init()
+{
 	CreateUI();
 
+	m_Overseer = new C_ClientOverseer();
 	if ( !m_Overseer->Init( this ) )
 	{
 		wxMessageBox( "Trace server failed to initialize! Make sure there's no trace server already launched", "Fail", wxOK | wxCENTER | wxICON_ERROR );
@@ -47,24 +71,7 @@ C_MainWindow::C_MainWindow()
 	succ		&= m_MsgIcons[2].LoadFile( buf, wxBITMAP_TYPE_ICO_RESOURCE, 16, 16);
 
 	m_TickTimer.Bind(wxEVT_TIMER, &C_MainWindow::OnTick, this);
-	m_TickTimer.Start(50);
-}
-
-// -------------------------------------------------------------------------------------------------------------------------
-
-C_MainWindow::~C_MainWindow()
-{
-	m_TickTimer.Stop();
-
-    if (nullptr != m_Overseer )
-    {
-		m_Overseer->Deinit();
-        delete m_Overseer;
-    }
-
-	delete m_MsgFilter;
-
-	m_TabMap.clear();
+	m_TickTimer.Start(50);	
 }
 
 // -------------------------------------------------------------------------------------------------------------------------
@@ -237,6 +244,20 @@ void C_MainWindow::OnTick(wxTimerEvent& inEvent)
 {
     if (nullptr != m_Overseer )
     {
+		m_PendingSysMessagesMutex.lock();
+		if ( !m_PendingSysMessages.empty() )
+		{
+			for ( S_Message* msg : m_PendingSysMessages )
+			{
+				OnTraceMessage( *msg, nullptr );
+				delete msg;
+			}
+
+			m_PendingSysMessages.clear();
+		}
+
+		m_PendingSysMessagesMutex.unlock();
+
 		m_Overseer->Tick();
     }
 }
@@ -378,16 +399,25 @@ void C_MainWindow::OnTraceMessage( S_Message const& msg, char const* threadName 
 
 // -------------------------------------------------------------------------------------------------------------------------
 
-void C_MainWindow::LogSystemMessage( char const* text, trace::E_TracedMessageType type )
+void C_MainWindow::LogSystemMessage( char const* text, trace::TracedMessageType type )
 {
 	S_Message* msg = S_Message::Create( 0, type, 0, text, nullptr, nullptr, 0 );
-	OnTraceMessage( *msg, nullptr );
-	delete msg;
+	if ( ( m_Overseer == nullptr ) || ( m_UiThreadId != std::this_thread::get_id() ) )
+	{
+		m_PendingSysMessagesMutex.lock();
+		m_PendingSysMessages.push_back( msg );
+		m_PendingSysMessagesMutex.unlock();
+	}
+	else
+	{
+		OnTraceMessage( *msg, nullptr );
+		delete msg;
+	}
 }
 
 // -------------------------------------------------------------------------------------------------------------------------
 
-wxIcon const& C_MainWindow::GetIcon( trace::E_TracedMessageType inType)
+wxIcon const& C_MainWindow::GetIcon( trace::TracedMessageType inType)
 {
     switch (inType)
     {

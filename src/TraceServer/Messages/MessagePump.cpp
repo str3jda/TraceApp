@@ -51,20 +51,20 @@ void C_MessagePump::RetrieveMessages( T_MessageCallback clbk )
 		std::swap( m_PendingMessages, m_EnumeratedMessages );
 	}
 
-// 	static bool aa = true;
-// 	if ( aa )
-// 	{
-// 		aa = false;
-// 		for ( size_t i = 0; i < 2000; ++i )
-// 		{
-// 			clbk( S_Message::Create( 5, trace::TMT_Greetings, 0, "TEST", nullptr, nullptr, 1 ) );
-// 			clbk( S_Message::Create( 5, trace::TMT_Information, 0, "Lolec", nullptr, nullptr, 1 ) );
-// 			clbk( S_Message::Create( 5, trace::TMT_Information, 0, "kakanec", nullptr, nullptr, 1 ) );
-// 			clbk( S_Message::Create( 5, trace::TMT_Warning, 0, "bzzz", nullptr, nullptr, 1 ) );
-// 			clbk( S_Message::Create( 5, trace::TMT_Information, 0, "omg", nullptr, nullptr, 1 ) );
-// 			clbk( S_Message::Create( 5, trace::TMT_Information, 0, "wut?", nullptr, nullptr, 1 ) );
-// 		}
-// 	}
+	// static bool aa = true;
+	// if ( aa )
+	// {
+	// 	aa = false;
+	// 	for ( size_t i = 0; i < 2000; ++i )
+	// 	{
+	// 		clbk( S_Message::Create( 5, 0x08, 0, "TEST", nullptr, nullptr, 1 ) );
+	// 		clbk( S_Message::Create( 5, trace::TMT_Information, 0, "Lolec", nullptr, nullptr, 1 ) );
+	// 		clbk( S_Message::Create( 5, trace::TMT_Information, 0, "kakanec", nullptr, nullptr, 1 ) );
+	// 		clbk( S_Message::Create( 5, trace::TMT_Warning, 0, "bzzz", nullptr, nullptr, 1 ) );
+	// 		clbk( S_Message::Create( 5, trace::TMT_Information, 0, "omg", nullptr, nullptr, 1 ) );
+	// 		clbk( S_Message::Create( 5, trace::TMT_Information, 0, "wut?", nullptr, nullptr, 1 ) );
+	// 	}
+	// }
 
 	for ( S_Message* msg : m_EnumeratedMessages )
 	{

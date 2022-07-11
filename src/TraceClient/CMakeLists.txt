@@ -6,11 +6,13 @@ target_compile_options(TraceClient
         -fno-exceptions
         -fno-rtti
         -Wall 
-        -Werror
+        #-Werror
 )
 
 target_include_directories(TraceClient INTERFACE "${PROJECT_SOURCE_DIR}/src")
 target_sources(TraceClient PRIVATE "${PROJECT_SOURCE_DIR}/src/TraceClient/TraceClient.cpp")
+
+target_link_libraries(TraceClient PUBLIC TraceCommon)
 
 # Platform specific macros
 target_compile_definitions(TraceClient PRIVATE

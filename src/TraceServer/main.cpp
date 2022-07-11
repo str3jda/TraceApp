@@ -1,18 +1,29 @@
 #include "stdafx.h"
 #include "UI/mainwindow.h"
 #include "Utilities/StackWalker.h"
+#include "Utilities/assert.h"
 
+#include <vector>
 #include <csignal>
 
-class C_TraceServerApp : public wxApp
+class C_TraceServerApp* g_App = nullptr;
+
+class C_TraceServerApp : public wxApp, public IAssertCallback
 {
 public:
+
+	C_TraceServerApp() { g_App = this; }
+	~C_TraceServerApp() { g_App = nullptr; }
 
 	virtual bool OnInit();
 	virtual int	OnExit();
 
 	void OnKeyPressEvent(wxKeyEvent& event);
+
+	void ReportAssert( char const* msg ) override;
 	
+	std::vector< std::string > LastEncounteredAsserts;
+
 private:
 	C_MainWindow* m_Wnd;
 	bool m_Browsing = true;
@@ -27,6 +38,12 @@ wxEND_EVENT_TABLE()
 // -------------------------------------------------------------------------------------------------------------------------
 wxIMPLEMENT_APP(C_TraceServerApp);
 // -------------------------------------------------------------------------------------------------------------------------
+
+
+IAssertCallback* get_assert_callback()
+{
+	return g_App;
+}
 
 class C_AssertStackWalker : public StackWalker
 {
@@ -72,6 +89,15 @@ long OnCrash( _EXCEPTION_POINTERS* exceptionInfo )
 	FILE* f = fopen( file_path, "w" );
 	fprintf( f, "REASON: %d\n", exceptionInfo->ExceptionRecord->ExceptionCode );
 
+	if ( g_App != nullptr && !g_App->LastEncounteredAsserts.empty() )
+	{
+		fputs( "ENCOUNTERED ASSERTS: \n", f );
+		for ( std::string const& x : g_App->LastEncounteredAsserts )
+		{
+			fprintf( f, "\t%s\n", x.c_str() );
+		}
+	}
+
 	fputs( "CALLSTACK:\n", f );
 	C_AssertStackWalker sw( f );
 	sw.ShowCallstack( GetCurrentThread(), exceptionInfo->ContextRecord );
@@ -84,7 +110,8 @@ long OnCrash( _EXCEPTION_POINTERS* exceptionInfo )
 
 void SignalHandler( int signal )
 {
-	//volatile std::sig_atomic_t.
+	if ( signal == 0 )
+		return;
 
 	time_t t;
 	time( &t );
@@ -92,17 +119,19 @@ void SignalHandler( int signal )
 	struct tm* ti = localtime( &t );
 
 	char file_path[ 256 ];
-	if ( signal != 0 )
-	{
-		sprintf_s( file_path, "crash %d.%d.%d %d.%d.%d.txt", ti->tm_mday, ti->tm_mon, 1900 + ti->tm_year, ti->tm_hour, ti->tm_min, ti->tm_sec );
-	}
-	else
-	{
-		sprintf_s( file_path, "clean_exit %d.%d.%d %d.%d.%d.txt", ti->tm_mday, ti->tm_mon, 1900 + ti->tm_year, ti->tm_hour, ti->tm_min, ti->tm_sec );
-	}
+	sprintf_s( file_path, "crash %d.%d.%d %d.%d.%d.txt", ti->tm_mday, ti->tm_mon, 1900 + ti->tm_year, ti->tm_hour, ti->tm_min, ti->tm_sec );
 
 	FILE* f = fopen( file_path, "w" );
 	fprintf( f, "REASON: signal:%d\n", signal );
+
+	if ( g_App != nullptr && !g_App->LastEncounteredAsserts.empty() )
+	{
+		fputs( "ENCOUNTERED ASSERTS: \n", f );
+		for ( std::string const& x : g_App->LastEncounteredAsserts )
+		{
+			fprintf( f, "\t%s\n", x.c_str() );
+		}
+	}
 
 	fputs( "CALLSTACK:\n", f );
 	C_AssertStackWalker sw( f );
@@ -113,18 +142,12 @@ void SignalHandler( int signal )
 
 // -------------------------------------------------------------------------------------------------------------------------
 
-void AtexitHandler()
-{
-	SignalHandler( 0 );
-}
-
-// -------------------------------------------------------------------------------------------------------------------------
-
 bool C_TraceServerApp::OnInit()
 {
+	g_App = this;
+
 	std::signal( SIGSEGV, &SignalHandler );
-	std::signal( SIGFPE, &SignalHandler );	
-	atexit( &AtexitHandler );
+	std::signal( SIGFPE, &SignalHandler );
 
 	if (!wxApp::OnInit())
 	{
@@ -133,6 +156,7 @@ bool C_TraceServerApp::OnInit()
 
 	// create main window
 	m_Wnd = new C_MainWindow();
+	m_Wnd->Init();
 	m_Wnd->Show(true);
 
 	return true;
@@ -143,10 +167,7 @@ bool C_TraceServerApp::OnInit()
 int C_TraceServerApp::OnExit()
 {
 	m_Wnd = nullptr;
-
-	int ret = wxApp::OnExit();
-
-	return ret;
+	return wxApp::OnExit();
 }
 
 // -------------------------------------------------------------------------------------------------------------------------
@@ -172,4 +193,21 @@ void C_TraceServerApp::OnKeyPressEvent(wxKeyEvent& event)
 				break;
 		}
 	}
+}
+
+// -------------------------------------------------------------------------------------------------------------------------
+
+void C_TraceServerApp::ReportAssert( char const* msg )
+{
+	if ( m_Wnd != nullptr )	
+	{
+		m_Wnd->LogSystemMessage( msg, trace::TMT_Error );
+	}
+
+	constexpr size_t TRACK_LAST_X_ASSERTS = 8;
+
+	if ( LastEncounteredAsserts.size() >= TRACK_LAST_X_ASSERTS )
+		LastEncounteredAsserts.erase( LastEncounteredAsserts.begin(), LastEncounteredAsserts.begin() + ( LastEncounteredAsserts.size() - TRACK_LAST_X_ASSERTS + 1 ) );
+
+	LastEncounteredAsserts.emplace_back( msg );
 }

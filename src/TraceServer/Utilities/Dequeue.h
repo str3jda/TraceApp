@@ -1,4 +1,5 @@
 #pragma once
+#include <Utilities/assert.h>
 
 template < typename T, size_t TBlockSize = 24 >
 class C_Dequeue
@@ -7,7 +8,7 @@ private:
 
 	struct S_Block
 	{
-		uint8_t m_Data[TBlockSize * sizeof(T)];
+		alignas( T ) uint8_t m_Data[TBlockSize * sizeof(T)];
 		S_Block* m_Next = nullptr;
 	};	
 
@@ -153,10 +154,14 @@ public:
 
 	void pop_front()
 	{
+		TRACE_ASSERT( m_Size > 0, "more poping than pushing!" );
 		reinterpret_cast< T* >( &m_FirstBlock->m_Data[m_Begin * sizeof( T )] )->~T();
 
 		if ( m_Begin == TBlockSize - 1 )
 		{ // last item in block
+
+			if ( m_FirstBlock == m_LastBlock )
+				m_End = 0;
 
 			S_Block* old = m_FirstBlock;
 			m_FirstBlock = old->m_Next;
@@ -165,30 +170,32 @@ public:
 			m_Begin = 0;
 		}
 		else
-		{
 			++m_Begin;
-		}
 		
 		--m_Size;
 	}
 
 	const_reference front() const
 	{
+		TRACE_ASSERT( m_Size > 0, "empty!" );
 		return reinterpret_cast< const_reference >( m_FirstBlock->m_Data[m_Begin * sizeof( T )] );
 	}
 
 	reference front()
 	{
+		TRACE_ASSERT( m_Size > 0, "empty!" );
 		return reinterpret_cast< reference >( m_FirstBlock->m_Data[m_Begin * sizeof( T )] );
 	}
 
 	const_reference back() const
 	{
+		TRACE_ASSERT( m_Size > 0, "empty!" );
 		return reinterpret_cast< const_reference >( m_LastBlock->m_Data[ ( m_End - 1 ) * sizeof( T )] );
 	}
 
 	reference back()
 	{
+		TRACE_ASSERT( m_Size > 0, "empty!" );
 		return reinterpret_cast< reference >( m_LastBlock->m_Data[ ( m_End - 1 ) * sizeof( T )] );
 	}
 
@@ -219,6 +226,7 @@ public:
 		while ( blockMajorId-- > 0 )
 		{
 			bl = bl->m_Next;
+			TRACE_ASSERT( bl != nullptr, "index too far!" );
 		}
 
 		return reinterpret_cast< reference >( bl->m_Data[blockMinorId * sizeof( T )] );
@@ -236,6 +244,7 @@ public:
 		while ( blockMajorId-- > 0 )
 		{
 			bl = bl->m_Next;
+			TRACE_ASSERT( bl != nullptr, "index too far!" );
 		}
 
 		return reinterpret_cast< const_reference >( bl->m_Data[blockMinorId * sizeof( T )] );

@@ -2,39 +2,21 @@
 #include "Message.h"
 #include <time.h>
 
-S_Message* S_Message::Create( T_SourceID sourceId, trace::E_TracedMessageType type, uint32_t line, char const* msg, char const* fn, char const* file, uint32_t inThread )
+S_Message* S_Message::Create( T_SourceID sourceId, trace::TracedMessageType type, uint32_t line, char const* msg, char const* fn, char const* file, uint32_t inThread )
 {
-	S_Message* rv = new S_Message( sourceId );
-
+	S_Message* rv = new S_Message();
+	rv->m_SourceID = sourceId;
 	rv->m_Type = type;
 	rv->m_Line = line;
 
 	if ( nullptr != msg )
-	{
-		strcpy( rv->m_Msg, msg );
-	}
-	else
-	{
-		rv->m_Msg[0] = '\0';
-	}
+		rv->m_Msg = msg;
 
 	if ( nullptr != fn )
-	{
-		strcpy( rv->m_Fn, fn );
-	}
-	else
-	{
-		rv->m_Fn[0] = '\0';
-	}
+		rv->m_Fn = fn;
 
 	if ( nullptr != file )
-	{
-		strcpy( rv->m_File, file );
-	}
-	else
-	{
-		rv->m_File[0] = '\0';
-	}
+		rv->m_File = file;
 
 	rv->m_Thread = inThread;
 
@@ -45,11 +27,12 @@ S_Message* S_Message::Create( T_SourceID sourceId, trace::E_TracedMessageType ty
 
 S_Message* S_Message::Deserialize( T_SourceID sourceId, uint8_t const* data, size_t dataSize )
 {
-	S_Message* rv = new S_Message( sourceId );
+	S_Message* rv = new S_Message();
+	rv->m_SourceID = sourceId;
 
 	uint8_t const* end = data + dataSize;
 
-	rv->m_Type = static_cast< trace::E_TracedMessageType >( *data ); 
+	rv->m_Type = static_cast< trace::TracedMessageType >( *data ); 
 	++data;
 
 	uint16_t lenMsg = *reinterpret_cast< uint16_t const* >( data ); 
@@ -69,8 +52,7 @@ S_Message* S_Message::Deserialize( T_SourceID sourceId, uint8_t const* data, siz
 
 	if ( lenMsg > 0 )
 	{
-		memcpy( rv->m_Msg, data, lenMsg );
-		rv->m_Msg[lenMsg] = '\0';
+		rv->m_Msg.assign( reinterpret_cast< char const* >( data ), lenMsg );
 		data += lenMsg;
 	}
 	else
@@ -80,8 +62,7 @@ S_Message* S_Message::Deserialize( T_SourceID sourceId, uint8_t const* data, siz
 
 	if ( lenFile > 0 )
 	{
-		memcpy( rv->m_File, data, lenFile );
-		rv->m_File[lenFile] = '\0';
+		rv->m_File.assign( reinterpret_cast< char const* >( data ), lenFile );
 		data += lenFile;
 	}
 	else
@@ -91,8 +72,7 @@ S_Message* S_Message::Deserialize( T_SourceID sourceId, uint8_t const* data, siz
 
 	if ( lenFn > 0 )
 	{
-		memcpy( rv->m_Fn, data, lenFn );
-		rv->m_Fn[lenFn] = '\0';
+		rv->m_Fn.assign( reinterpret_cast< char const* >( data ), lenFn );
 		data += lenFn;
 	}
 	else

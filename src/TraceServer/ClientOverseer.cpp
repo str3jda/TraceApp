@@ -3,6 +3,7 @@
 #include "Messages/MessagePump.h"
 #include "UI/TabModel.h"
 #include "UI/mainwindow.h"
+#include <TraceCommon/Config.h>
 
 static char const* const SOURCE_MAP_FILE = "source_cache.trace";
 
@@ -85,8 +86,8 @@ void C_ClientOverseer::Tick()
 				m_MainWindow->OnTraceMessage( *delMsg, nullptr );
 				delete delMsg;
 
-				m_MainWindow->OnMessageGreetings( msg->m_Msg, msg->m_SourceID );
-				client.m_AppName = msg->m_Msg;
+				m_MainWindow->OnMessageGreetings( msg->m_Msg.c_str(), msg->m_SourceID );
+				client.m_AppName = std::move( msg->m_Msg );
 				client.m_Inited = true;
 
 				SaveSourceMap();

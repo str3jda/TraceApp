@@ -22,10 +22,7 @@ void C_TabModel::Clear()
 {
     if (0 < m_Msgs.size())
     {
-		while ( !m_Msgs.empty() )
-		{
-			m_Msgs.pop_front();
-		}
+		m_Msgs.clear();
 
 // 		for ( size_t i = m_FilteredMsgs.size(); i-- > 0; )
 // 		{

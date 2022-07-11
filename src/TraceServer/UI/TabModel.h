@@ -53,7 +53,7 @@ private:
 
     struct S_StoredMsg
     {
-        trace::E_TracedMessageType m_Type;
+        trace::TracedMessageType m_Type;
 		bool m_Visible : 1;
 
         wxString m_Time;

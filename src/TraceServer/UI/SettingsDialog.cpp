@@ -29,16 +29,12 @@ C_SettingsDialog::C_SettingsDialog( S_SettingParams& outParams, wxIcon const& in
 
 	// Message Filter line
 	new wxStaticText(this, wxID_ANY, "Message: ", wxPoint( 5, 34 ) );
-	m_MessageFilterCntrl = new wxTextCtrl(this, wxID_ANY, m_Params.m_MsgFilter.m_Text.c_str(), wxPoint( 80, 32 ), wxSize( 300, wxDefaultSize.y ) );
+	m_MessageFilterCntrl = new wxTextCtrl(this, wxID_ANY, m_Params.m_MsgFilter.m_Text.c_str(), wxPoint( 80, 32 ), wxSize( 330, wxDefaultSize.y ) );
 	m_MessageFilterCntrl->Bind( wxEVT_KEY_UP, &C_SettingsDialog::OnKeyEnter, this );
 
-	m_MessageCaseSensitiveChck = new wxCheckBox(this, wxID_ANY, "CS", wxPoint( 390, 34 ) );
+	m_MessageCaseSensitiveChck = new wxCheckBox(this, wxID_ANY, "CS", wxPoint( 430, 34 ) );
 	m_MessageCaseSensitiveChck->SetValue(m_Params.m_MsgFilter.m_CaseSensitive);
 	m_MessageCaseSensitiveChck->SetToolTip( "Case sensitive" );
-
-	m_MessageRegexChck = new wxCheckBox(this, wxID_ANY, "RegEx", wxPoint( 430, 34 ) );
-	m_MessageRegexChck->SetValue( m_Params.m_MsgFilter.m_Regex );
-	m_MessageRegexChck->SetToolTip( "Use regular expression" );
 
 	// App settings line
 	new wxStaticText(this, wxID_ANY, "Stay on top: ", wxPoint( 5, 60 ));
@@ -51,7 +47,7 @@ C_SettingsDialog::C_SettingsDialog( S_SettingParams& outParams, wxIcon const& in
 	m_ResetOnNewProcessInstanceChck->SetToolTip( "Automatically reset content on new process instance" );
 
 	new wxStaticText( this, wxID_ANY, "Count limit: ", wxPoint( 5, 106 ) );
-	m_CountLimit = new wxSpinCtrl( this, wxID_ANY, "XX", wxPoint( 82, 102 ) );
+	m_CountLimit = new wxSpinCtrl( this, wxID_ANY, "XX", wxPoint( 82, 102 ), wxSize( 60, wxDefaultSize.y ) );
 	m_CountLimit->SetRange( 0, 0xffff );
 	m_CountLimit->SetValue( m_Params.m_MsgFilter.m_MsgLimit );
 
@@ -98,7 +94,6 @@ void C_SettingsDialog::ApplyChanges()
 	m_Params.m_ResetOnProcInstance = m_ResetOnNewProcessInstanceChck->GetValue();
 	m_Params.m_MsgFilter.m_Text = m_MessageFilterCntrl->GetLineText(0);
 	m_Params.m_MsgFilter.m_CaseSensitive = m_MessageCaseSensitiveChck->GetValue();
-	m_Params.m_MsgFilter.m_Regex = m_MessageRegexChck->GetValue();
 	m_Params.m_MQTTBroker = m_MQTTCntrl->GetLineText( 0 );
 
 	uint32_t typeFlags = 0;
