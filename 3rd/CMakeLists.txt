@@ -1,27 +1,31 @@
-# wxWidgets
-set(wxBUILD_SAMPLES OFF CACHE BOOL "" FORCE)
-set(wxBUILD_SHARED OFF CACHE BOOL "" FORCE)
-set(wxBUILD_INSTALL OFF CACHE BOOL "" FORCE)
+if(TRACE_BUILD_SERVER)
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/3rd/wx)
+	# wxWidgets
+	set(wxBUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+	set(wxBUILD_SHARED OFF CACHE BOOL "" FORCE)
+	set(wxBUILD_INSTALL OFF CACHE BOOL "" FORCE)
 
-# PAHO - MQTT client
-set(PAHO_BUILD_SHARED OFF CACHE BOOL "" FORCE)
-set(PAHO_BUILD_STATIC ON CACHE BOOL "" FORCE)
-set(PAHO_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
-set(PAHO_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
-set(PAHO_ENABLE_CPACK OFF CACHE BOOL "" FORCE)
+	add_subdirectory(${PROJECT_SOURCE_DIR}/3rd/wx)
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/3rd/paho-mqtt)
+	# PAHO - MQTT client
+	set(PAHO_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+	set(PAHO_BUILD_STATIC ON CACHE BOOL "" FORCE)
+	set(PAHO_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+	set(PAHO_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+	set(PAHO_ENABLE_CPACK OFF CACHE BOOL "" FORCE)
 
-# Regex
+	add_subdirectory(${PROJECT_SOURCE_DIR}/3rd/paho-mqtt)
 
-add_library(regex INTERFACE)
-target_include_directories(regex INTERFACE "${CMAKE_SOURCE_DIR}/3rd/regex")
+	# Regex
 
-#
-# RapidJSON
-#
+	add_library(regex INTERFACE)
+	target_include_directories(regex INTERFACE "${CMAKE_SOURCE_DIR}/3rd/regex")
 
-add_library(rapidjson INTERFACE)
-target_include_directories(rapidjson INTERFACE "${CMAKE_SOURCE_DIR}/3rd/rapidjson/include")
+	#
+	# RapidJSON
+	#
+
+	add_library(rapidjson INTERFACE)
+	target_include_directories(rapidjson INTERFACE "${CMAKE_SOURCE_DIR}/3rd/rapidjson/include")
+	
+endif()
