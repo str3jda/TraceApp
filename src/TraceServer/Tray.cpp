@@ -8,7 +8,7 @@ BEGIN_EVENT_TABLE(C_Tray, wxTaskBarIcon)
 	EVT_MENU(E_TE_SHOW, C_Tray::OnShow) 
 	EVT_MENU(E_TE_CLOSE, C_Tray::OnClose) 
 	EVT_MENU(E_TE_RESET_POS, C_Tray::OnResetPos)
-	EVT_TASKBAR_LEFT_DCLICK(OnDblClick)
+	EVT_TASKBAR_LEFT_DCLICK(C_Tray::OnDblClick)
 END_EVENT_TABLE() 
 // -------------------------------------------------------------------------------------------------------------------------
 

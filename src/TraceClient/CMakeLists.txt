@@ -10,7 +10,13 @@ target_compile_options(TraceClient
 )
 
 target_include_directories(TraceClient INTERFACE "${PROJECT_SOURCE_DIR}/src")
-target_sources(TraceClient PRIVATE "${PROJECT_SOURCE_DIR}/src/TraceClient/TraceClient.cpp")
+target_sources(TraceClient 
+    PRIVATE 
+        ${PROJECT_SOURCE_DIR}/src/TraceClient/TraceClient.cpp
+        $<$<PLATFORM_ID:Windows>:
+            ${PROJECT_SOURCE_DIR}/src/TraceClient/TraceClient_win.cpp
+        >
+)
 
 target_link_libraries(TraceClient PUBLIC TraceCommon)
 

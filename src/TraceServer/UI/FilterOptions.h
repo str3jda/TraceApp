@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <regex.hpp>
-
 struct S_FilterOptions
 {
 	S_FilterOptions()

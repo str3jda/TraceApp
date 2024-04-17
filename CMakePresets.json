@@ -1,0 +1,118 @@
+{
+    "version": 3,
+    "configurePresets": 
+    [
+        {
+            "name": "base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build",
+            "generator": "Ninja",
+            "cacheVariables": 
+            {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/bin",
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_OVERLAY_TRIPLETS": "community",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_C_COMPILER": "clang"
+            }
+        },
+        {
+            "name": "windows",
+            "hidden": true,
+            "cacheVariables": 
+            {
+                "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
+            },
+            "vendor": 
+            {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": { "hostOS": [ "Windows" ] }
+            },
+            "condition": 
+            {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "linux",
+            "hidden": true,
+            "cacheVariables": 
+            {
+                "VCPKG_TARGET_TRIPLET": "x64-linux"
+            },
+            "vendor": 
+            {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": { "hostOS": [ "Linux" ] }
+            },
+            "condition": 
+            {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "develop",
+            "displayName": "Develop",
+            "inherits": "base",
+            "hidden": true,
+            "cacheVariables": 
+            {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "TRACE_BUILD_SERVER": true
+            }
+        },
+        {
+            "name": "retail",
+            "displayName": "Retail",
+            "inherits": "base",
+            "hidden": true,
+            "cacheVariables": 
+            {
+                "CMAKE_BUILD_TYPE": "Release",
+                "TRACE_BUILD_SERVER": true
+            }
+        },
+        {
+            "name": "develop-windows",
+            "displayName": "Develop",
+            "inherits": ["develop", "windows"],
+            "cacheVariables": 
+            {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "TRACE_BUILD_SERVER": true
+            }
+        },
+        {
+            "name": "retail-windows",
+            "displayName": "Retail",
+            "inherits": ["retail", "windows"],
+            "cacheVariables": 
+            {
+                "CMAKE_BUILD_TYPE": "Release",
+                "TRACE_BUILD_SERVER": true
+            }
+        },
+        {
+            "name": "develop-linux",
+            "displayName": "Develop",
+            "inherits": ["develop", "linux"],
+            "cacheVariables": 
+            {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "TRACE_BUILD_SERVER": true
+            }
+        },
+        {
+            "name": "retail-linux",
+            "displayName": "Retail",
+            "inherits": ["retail", "linux"],
+            "cacheVariables": 
+            {
+                "CMAKE_BUILD_TYPE": "Release",
+                "TRACE_BUILD_SERVER": true
+            }
+        }
+    ]
+}

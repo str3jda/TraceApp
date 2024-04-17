@@ -3,9 +3,6 @@
 #pragma warning (disable : 4191)
 #pragma warning (disable : 4365)
 
-#define _HAS_EXCEPTIONS 0
-#define wxUSE_UNICODE 0
-
 #include <wx/wx.h>
 #include <wx/dataview.h>
 #include <wx/notebook.h>
