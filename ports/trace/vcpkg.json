@@ -1,12 +1,13 @@
 {
-	"name": "trace",
-	"version": "1.0.0",
-	"description": "Logging and visualizing messages in separate app",
-	"dependencies": 
-	[
-		{
-			"name": "vcpkg-cmake-config",
-			"host": true
-		}
-	]
+  "name": "trace",
+  "version": "1.0.0",
+  "description": "Logging and visualizing messages in separate app",
+  "homepage": "n/a",
+  "license": "MIT",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ]
 }
