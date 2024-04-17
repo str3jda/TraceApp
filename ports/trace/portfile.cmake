@@ -4,7 +4,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO  str3jda/TraceApp 
     REF "v${VERSION}"
-    SHA512 dc3fcac9188109d90645bd93d6222541e38fd492
+    SHA512 a550b147045b930d3c6a5b5c83c764bdd2621178
     HEAD_REF main
 )
 
