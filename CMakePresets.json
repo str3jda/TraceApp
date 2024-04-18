@@ -60,7 +60,7 @@
             "cacheVariables": 
             {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "TRACE_BUILD_SERVER": true
+                "VCPKG_MANIFEST_FEATURES": "app"
             }
         },
         {
@@ -71,7 +71,7 @@
             "cacheVariables": 
             {
                 "CMAKE_BUILD_TYPE": "Release",
-                "TRACE_BUILD_SERVER": true
+                "VCPKG_MANIFEST_FEATURES": "app"
             }
         },
         {
@@ -80,8 +80,7 @@
             "inherits": ["develop", "windows"],
             "cacheVariables": 
             {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "TRACE_BUILD_SERVER": true
+                "VCPKG_MANIFEST_FEATURES": "app"
             }
         },
         {
@@ -90,8 +89,6 @@
             "inherits": ["retail", "windows"],
             "cacheVariables": 
             {
-                "CMAKE_BUILD_TYPE": "Release",
-                "TRACE_BUILD_SERVER": true
             }
         },
         {
@@ -100,8 +97,6 @@
             "inherits": ["develop", "linux"],
             "cacheVariables": 
             {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "TRACE_BUILD_SERVER": true
             }
         },
         {
@@ -110,8 +105,6 @@
             "inherits": ["retail", "linux"],
             "cacheVariables": 
             {
-                "CMAKE_BUILD_TYPE": "Release",
-                "TRACE_BUILD_SERVER": true
             }
         }
     ]

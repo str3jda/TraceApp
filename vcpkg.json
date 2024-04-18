@@ -1,11 +1,33 @@
 {
 	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-	"name": "traceapp",
-	"version": "0.1",
+	"name": "trace",
+	"version": "1.0.0",
+	"port-version": 1,
+	"description": "Logging and visualizing messages in separate app",
+	"homepage": "https://github.com/str3jda/TraceApp",
+	"license": "MIT",
 	"dependencies": 
 	[
-		"rapidjson",
-		"wxwidgets",
-		"paho-mqtt"
-	]
+		{
+			"name": "vcpkg-cmake",
+			"host": true
+		},
+		{
+			"name": "vcpkg-cmake-config",
+			"host": true
+		}		
+	],
+	"features": 
+	{
+		"app": 
+		{
+			"description": "Include UI app",
+			"dependencies": 
+			[
+				"rapidjson",
+				"wxwidgets",
+				"paho-mqtt"
+			]
+		}
+	}
 }
