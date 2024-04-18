@@ -5,7 +5,7 @@ vcpkg_from_github(
     REPO  str3jda/TraceApp 
     REF "v${VERSION}"
     SHA512 a550b147045b930d3c6a5b5c83c764bdd2621178
-    HEAD_REF main
+    HEAD_REF master
 )
 
 vcpkg_cmake_configure(
