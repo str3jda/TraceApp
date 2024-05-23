@@ -428,7 +428,7 @@ wxWindow* C_MainWindow::CreateSettingsPanel( wxWindow* _parent )
 	{
 		_sizer->Add( m_UI.m_MessageFilterCntrl = new wxTextCtrl( _parent, wxID_ANY, m_CurrentSetting.m_MsgFilter.Text.c_str() ), wxSizerFlags().Border(wxLEFT) );
 
-		m_UI.m_MessageFilterCntrl->Bind( wxEVT_TEXT , &C_MainWindow::OnFilterChanged, this, wxID_ANY, wxID_ANY, reinterpret_cast< wxObject* >( 1 ) );
+		m_UI.m_MessageFilterCntrl->Bind( wxEVT_TEXT, &C_MainWindow::OnFilterChanged, this );
 		m_UI.m_MessageFilterCntrl->SetFocus();
 		m_UI.m_MessageFilterCntrl->SetInsertionPointEnd();
 
@@ -489,7 +489,7 @@ wxWindow* C_MainWindow::CreateSettingsPanel( wxWindow* _parent )
 	{
 		_sizer->Add( m_UI.m_MQTTCntrl = new wxTextCtrl( _parent, wxID_ANY, m_CurrentSetting.m_MQTTBroker ) );
 		m_UI.m_MQTTCntrl->SetValue( m_CurrentSetting.m_MQTTBroker );
-		m_UI.m_MQTTCntrl->Bind( wxEVT_TEXT, &C_MainWindow::OnFilterChanged, this, wxID_ANY, wxID_ANY, reinterpret_cast< wxObject* >( 1 ) );
+		m_UI.m_MQTTCntrl->Bind( wxEVT_TEXT, &C_MainWindow::OnFilterChanged, this );
 	} );
 	
 	// Legend
@@ -597,7 +597,7 @@ wxWindow* C_MainWindow::CreateSettingsPanel( wxWindow* _parent )
 
 void C_MainWindow::OnFilterChanged( wxEvent& _ev )
 {
-	m_ApplyPendingSettingsCooldown = ( _ev.GetEventUserData() != nullptr ) ? 10 : 1;
+	m_ApplyPendingSettingsCooldown = _ev.GetEventObject()->IsKindOf(wxCLASSINFO(wxTextCtrl)) ? 10 : 1;
 
 	uint32_t typeFlags = 0;
 
