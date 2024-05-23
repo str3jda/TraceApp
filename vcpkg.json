@@ -6,6 +6,7 @@
 	"description": "Logging and visualizing messages from any app in a UI",
 	"homepage": "https://github.com/str3jda/TraceApp",
 	"license": "MIT",
+	"default-features": ["mqtt"],
 	"features": 
 	{
 		"app": 
