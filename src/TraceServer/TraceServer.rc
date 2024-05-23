@@ -1,8 +1,0 @@
-// Microsoft Visual C++ generated resource script.
-//
-#include "resource.h"
-
-IDI_TRACERSERVER        ICON                    "Resources/TracerServer.ico"
-IDI_MSG_INFO			ICON					"Resources/info.ico"
-IDI_MSG_WARNING         ICON					"Resources/warning.ico"
-IDI_MSG_ERROR			ICON					"Resources/error.ico"

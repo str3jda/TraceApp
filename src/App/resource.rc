@@ -1,0 +1,15 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+IDI_TRACERSERVER        ICON                    "Resources/TracerServer.ico"
+IDI_SYS_TAB	       		ICON                    "Resources/settings.ico"
+IDI_SYS_TAB_ACTIVE 		ICON                    "Resources/settings_active.ico"
+#if BLACK_THEME
+IDI_MSG_INFO			ICON					"Resources/info_b.ico"
+#else
+IDI_MSG_INFO			ICON					"Resources/info_w.ico"
+#endif
+IDI_MSG_LOG				ICON					"Resources/log.ico"
+IDI_MSG_WARNING         ICON					"Resources/warning.ico"
+IDI_MSG_ERROR			ICON					"Resources/error.ico"

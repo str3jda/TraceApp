@@ -3,20 +3,9 @@
 	"name": "trace",
 	"version": "1.0.0",
 	"port-version": 1,
-	"description": "Logging and visualizing messages in separate app",
+	"description": "Logging and visualizing messages from any app in a UI",
 	"homepage": "https://github.com/str3jda/TraceApp",
 	"license": "MIT",
-	"dependencies": 
-	[
-		{
-			"name": "vcpkg-cmake",
-			"host": true
-		},
-		{
-			"name": "vcpkg-cmake-config",
-			"host": true
-		}		
-	],
 	"features": 
 	{
 		"app": 
@@ -24,8 +13,18 @@
 			"description": "Include UI app",
 			"dependencies": 
 			[
-				"rapidjson",
-				"wxwidgets",
+				"wxwidgets"
+			]
+		},
+		"pipe":
+		{
+			"description": "Support for interprocess pipes (works only if TraceApp is running on the same machine)"
+		},
+		"mqtt":
+		{
+			"description": "Support for MQTT (messages are send over MQTT network)",
+			"dependencies": 
+			[
 				"paho-mqtt"
 			]
 		}

@@ -1,3 +1,0 @@
-
-add_library(TraceCommon INTERFACE)
-target_include_directories(TraceCommon INTERFACE "${PROJECT_SOURCE_DIR}/src")

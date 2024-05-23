@@ -12,8 +12,10 @@
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/bin",
                 "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
                 "VCPKG_OVERLAY_TRIPLETS": "community",
+                "VCPKG_MANIFEST_FEATURES": "app;pipe;mqtt",
                 "CMAKE_CXX_COMPILER": "clang++",
-                "CMAKE_C_COMPILER": "clang"
+                "CMAKE_C_COMPILER": "clang",
+                "TRACE_APP_THEME_BLACK": true
             }
         },
         {
@@ -59,8 +61,7 @@
             "hidden": true,
             "cacheVariables": 
             {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "VCPKG_MANIFEST_FEATURES": "app"
+                "CMAKE_BUILD_TYPE": "Debug"
             }
         },
         {
@@ -70,42 +71,28 @@
             "hidden": true,
             "cacheVariables": 
             {
-                "CMAKE_BUILD_TYPE": "Release",
-                "VCPKG_MANIFEST_FEATURES": "app"
+                "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
             "name": "develop-windows",
             "displayName": "Develop",
-            "inherits": ["develop", "windows"],
-            "cacheVariables": 
-            {
-                "VCPKG_MANIFEST_FEATURES": "app"
-            }
+            "inherits": ["develop", "windows"]
         },
         {
             "name": "retail-windows",
             "displayName": "Retail",
-            "inherits": ["retail", "windows"],
-            "cacheVariables": 
-            {
-            }
+            "inherits": ["retail", "windows"]
         },
         {
             "name": "develop-linux",
             "displayName": "Develop",
-            "inherits": ["develop", "linux"],
-            "cacheVariables": 
-            {
-            }
+            "inherits": ["develop", "linux"]
         },
         {
             "name": "retail-linux",
             "displayName": "Retail",
-            "inherits": ["retail", "linux"],
-            "cacheVariables": 
-            {
-            }
+            "inherits": ["retail", "linux"]
         }
     ]
 }
