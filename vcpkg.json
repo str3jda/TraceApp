@@ -2,7 +2,7 @@
 	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
 	"name": "trace",
 	"version": "1.0.0",
-	"port-version": 1,
+	"port-version": 0,
 	"description": "Logging and visualizing messages from any app in a UI",
 	"homepage": "https://github.com/str3jda/TraceApp",
 	"license": "MIT",
