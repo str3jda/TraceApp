@@ -10,6 +10,7 @@
 #include <App/Theme.h>
 #include <Trace/Message.h>
 
+#include <bit>
 #include "wxNotebookEx.h"
 
 #define SETTINGS_CFG_FILE "setings.trace"

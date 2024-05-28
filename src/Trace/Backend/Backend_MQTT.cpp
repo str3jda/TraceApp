@@ -319,12 +319,6 @@ namespace trace
 		}
 	}
 
-	bool BackendMQTT::Init( TraceAppID_t _app_id, SysEventCallback_t _sys_event_callback )
-	{
-		m_AppId = _app_id;
-		return Backend::Init( _app_id, _sys_event_callback );
-	}
-
 	void BackendMQTT::Deinit()
 	{
 #if TRACE_BACKEND_LISTENER

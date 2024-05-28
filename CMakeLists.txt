@@ -48,8 +48,6 @@ set_target_properties(
 
 target_compile_options(trace 
     PRIVATE 
-        -fno-exceptions
-        -fno-rtti
         -Wall 
         #-Werror
 )

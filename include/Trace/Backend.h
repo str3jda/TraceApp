@@ -16,7 +16,7 @@ namespace trace
 
 		virtual ~Backend() = default;
 
-		virtual bool Init( [[maybe_unused]] TraceAppID_t _app_id, SysEventCallback_t _sys_event_callback ) { m_SysEventCallback = _sys_event_callback; return true; }
+		virtual bool Init( [[maybe_unused]] TraceAppID_t _app_id, SysEventCallback_t _sys_event_callback ) { m_AppId = _app_id; m_SysEventCallback = _sys_event_callback; return true; }
 		virtual void Deinit() {}
 
 		virtual void SendMessage( 
@@ -35,6 +35,10 @@ namespace trace
 	protected:
 
 		void ReportSysEvent( char const* _text, TracedMessageType_t _type = TMT_Information ) { if ( m_SysEventCallback ) m_SysEventCallback( _type, _text ); }
+
+	protected:
+
+		TraceAppID_t m_AppId;
 
 	private:
 
