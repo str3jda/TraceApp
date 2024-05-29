@@ -48,6 +48,7 @@ void C_TabModel::AddMsg(trace::Message const& _msg, ThreadNameHandle inThreadNam
 	msg.Fn = _msg.Function;
 	msg.File = _msg.File;
 	msg.FileLine = _msg.Line;
+	msg.Frame = _msg.Frame;
 
 	uint16_t msgCountLimit = m_CurrentMsgFilter.GetMsgCountLimit();
 	if ( m_Msgs.size() >= msgCountLimit )
@@ -157,7 +158,7 @@ void C_TabModel::GetValueByRow( wxVariant &variant, unsigned row, unsigned col )
 	{
 		wxString file_str;
 	 	if ( !msg.File.empty() )
-        	file_str.sprintf( "%s (%u)", msg.File.c_str(), msg.FileLine );
+        	file_str.sprintf( "%s (%u)", msg.File.c_str(), (unsigned)msg.FileLine );
 
 		variant = std::move ( file_str );
 		break;
@@ -165,6 +166,15 @@ void C_TabModel::GetValueByRow( wxVariant &variant, unsigned row, unsigned col )
 	case E_C_Thread: 
 		variant = m_MainWindow->ResolveThreadName( msg.Thread );
 		break;
+
+	case E_C_Frame: 
+	{
+		wxString lt_str;
+		if ( msg.Frame != 0 )
+			lt_str.sprintf( "%u", (uint32_t)msg.Frame );
+		variant = std::move( lt_str );
+		break;
+	}
 	}
 }
 

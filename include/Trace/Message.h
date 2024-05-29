@@ -31,7 +31,7 @@ namespace trace
 			char const* _msg, 
 			char const* _fn = nullptr, 
 			char const* _file = nullptr, 
-			uint32_t _line = 0, 
+			uint16_t _line = 0, 
 			uint32_t _thread = 0, 
 			uint32_t _local_time = 0 )
 
@@ -53,7 +53,8 @@ namespace trace
 	
 		TracedMessageType_t Type = TMT_Information;
 
-		uint32_t Line = 0;
+		uint16_t Line = 0;
+		uint16_t Frame = 0; // Frame index supplied (used to help recognizing messages within the same frame)
 		uint32_t Thread = 0;
 		uint32_t LocalTime = 0; // App local time (in milliseconds? it's up to client to give it a meaning, UI is only visualizing number)
 

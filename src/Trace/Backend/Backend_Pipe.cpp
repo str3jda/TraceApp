@@ -9,12 +9,13 @@ namespace trace
 		char const* _message, 
 		char const* _file, 
 		char const* _function, 
-		uint32_t _line,
+		uint16_t _line,
+		uint16_t _frame,
 		uint32_t _thread_id,
 		uint32_t _local_time )
 	{
 		uint8_t buffer[ 1024 ];
-		uint32_t written = Serialize( buffer, _type, _message, _file, _function, _line, _thread_id, _local_time );
+		uint32_t written = Serialize( buffer, _type, _message, _file, _function, _line, _frame, _thread_id, _local_time );
 
 		if ( written != 0 )
 		{
@@ -41,7 +42,8 @@ namespace trace
 		char const* _message, 
 		char const* _file, 
 		char const* _function, 
-		uint32_t _line,
+		uint16_t _line,
+		uint16_t _frame,
 		uint32_t _thread_id,
 		uint32_t _local_time )
 	{
@@ -66,6 +68,7 @@ namespace trace
 		MsgHeader header;
 		header.Type = static_cast< decltype( MsgHeader::Type ) >( _type );
 		header.Line = _line;
+		header.Frame = _frame;
 		header.Thread = _thread_id;
 		header.LocalTime = _local_time;
 		header.MsgLength = static_cast< decltype( MsgHeader::MsgLength ) >( lenMsg );
@@ -117,6 +120,7 @@ namespace trace
 
 		_out_message.Type = static_cast< TracedMessageType_t >( header.Type );
 		_out_message.Line = header.Line;
+		_out_message.Frame = header.Frame;
 		_out_message.Thread = header.Thread;
 		_out_message.LocalTime = header.LocalTime;
 

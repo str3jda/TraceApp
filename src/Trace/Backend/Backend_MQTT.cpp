@@ -351,7 +351,8 @@ namespace trace
 		char const* _message, 
 		char const* _file, 
 		char const* _function, 
-		uint32_t _line,
+		uint16_t _line,
+		uint16_t _frame,
 		uint32_t _thread_id,
 		uint32_t _local_time )
 	{
@@ -368,7 +369,7 @@ namespace trace
 			return;
 
 		char payload[MAX_PAYLOAD_SIZE];
-		uint32_t payload_len = Serialize( payload, _message, _file, _function, _line, _thread_id, _local_time );
+		uint32_t payload_len = Serialize( payload, _message, _file, _function, _line, _frame, _thread_id, _local_time );
 		if ( payload_len == 0 )
 		{
 			ReportSysEvent( "Failed to serialize json into mqtt payload!", TMT_Error );
@@ -485,7 +486,8 @@ namespace trace
 		char const* _message, 
 		char const* _file, 
 		char const* _function, 
-		uint32_t _line,
+		uint16_t _line,
+		uint16_t _frame,
 		uint32_t _thread_id,
 		uint32_t _local_time )
 	{
@@ -508,6 +510,9 @@ namespace trace
 
 		if ( _local_time != 0 )
 			composer( 'i', _local_time );
+
+		if ( _frame != 0 )
+			composer( 'r', _frame );
 
 		return composer.Finish();
 	}
@@ -535,6 +540,7 @@ namespace trace
 				case 'f': parser.ParseValue( _out_message.File ); break;
 				case 'c': parser.ParseValue( _out_message.Function ); break;
 				case 'l': parser.ParseValue( _out_message.Line ); break;
+				case 'r': parser.ParseValue( _out_message.Frame ); break;
 				case 't': parser.ParseValue( _out_message.Thread ); break;
 				case 'i': parser.ParseValue( _out_message.LocalTime ); break;
 				default:

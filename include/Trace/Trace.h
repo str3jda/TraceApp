@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <initializer_list>
 
- namespace trace
- {
+namespace trace
+{
 	struct Message;
 	class Backend;
 
@@ -65,7 +65,7 @@
 		char const* _function = nullptr, 
 		uint32_t _line = 0,
 		uint32_t _thread_id = 0,
-		uint32_t _local_time = 0 );
+		uint32_t _local_time = 0,
+		uint32_t _frame = 0 );
 
-	
- }
+}

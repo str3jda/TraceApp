@@ -13,6 +13,7 @@ enum E_Column
     E_C_Fn,
     E_C_File,
 	E_C_Thread,
+	E_C_Frame,
 
     E_C_Count
 };

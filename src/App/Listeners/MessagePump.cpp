@@ -145,7 +145,7 @@ void C_MessagePump::RetrieveMessages( T_MessageCallback clbk )
 		}
 	}
 #endif
-#if 0
+#if 1
 	{
 		auto add = [&clbk](auto t, char const* m, uint32_t app)
 		{
@@ -159,8 +159,9 @@ void C_MessagePump::RetrieveMessages( T_MessageCallback clbk )
 		if ( cooldown == 0 )
 		{
 			uint32_t const apps[5] = { 666, 667, 668, 669, 0 };
+			char const* const msg[5] = { "zdar", "prd", "no ty koky", "co to zase je?", "je to posraty" };
 
-			trace::Message x( trace::TracedMessageType_t( ( rand() % 4 ) + 1 ),  "caues" );
+			trace::Message x( trace::TracedMessageType_t( ( rand() % 4 ) + 1 ), msg[rand() % 5] );
 			clbk(x, apps[ rand() % 5 ]);
 
 			cooldown = rate;

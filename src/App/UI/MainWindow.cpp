@@ -319,6 +319,7 @@ ListView* C_MainWindow::CreateTab( char const* inTitle, wxDataViewModel* model, 
 	listBox->AppendColumn( new wxDataViewColumn( "Fn", new wxDataViewTextRenderer(), E_C_Fn, 180, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE ) );
 	listBox->AppendColumn( new wxDataViewColumn( "File", new wxDataViewTextRenderer(), E_C_File, 170, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE ) );
 	listBox->AppendColumn( new wxDataViewColumn( "Thread", new wxDataViewTextRenderer(), E_C_Thread, 75, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE ) );
+	listBox->AppendColumn( new wxDataViewColumn( "Frame", new wxDataViewTextRenderer(), E_C_Frame, 45, wxALIGN_RIGHT, wxDATAVIEW_COL_RESIZABLE ) );
 	
 	listBox->AssociateModel( model );
 	if ( wxHeaderCtrl* header = listBox->GenericGetHeader(); header != nullptr )

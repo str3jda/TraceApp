@@ -13,7 +13,8 @@ struct UiMessage
 
 	wxDateTime GTime;
 	uint32_t LocalTime;
-	uint32_t FileLine;
+	uint16_t FileLine;
+	uint16_t Frame;
 	ThreadNameHandle Thread = InvalidThreadNameHandle;
 	wxString Msg;
 	wxString Fn;

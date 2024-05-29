@@ -14,7 +14,7 @@ namespace trace
 		if ( !_backend.Init( _app_id, _callback ) )
 			return false;
 
-		_backend.SendMessage( TMT_Greetings, _process_name, nullptr, nullptr, 0, 0, 0 );
+		_backend.SendMessage( TMT_Greetings, _process_name, nullptr, nullptr, 0, 0, 0, 0 );
 
 		return true;
 	}
@@ -23,7 +23,7 @@ namespace trace
 	{
 		if ( Backend* backend = BackendIfy( _handle ) )
 		{
-			backend->SendMessage( TMT_Farewell, nullptr, nullptr, nullptr, 0, 0, 0 );
+			backend->SendMessage( TMT_Farewell, nullptr, nullptr, nullptr, 0, 0, 0, 0 );
 			backend->Deinit();
 		}
 	}
@@ -31,7 +31,7 @@ namespace trace
 	void send_thread_name( TraceHandle_t _handle, uint32_t _thread_id, char const* _thread_name )
 	{
 		if ( Backend* backend = BackendIfy( _handle ) )
-			backend->SendMessage( TMT_NewThread, _thread_name, nullptr, nullptr, 0, _thread_id, 0 );
+			backend->SendMessage( TMT_NewThread, _thread_name, nullptr, nullptr, 0, 0, _thread_id, 0 );
 	}
 
 	void send(
@@ -40,11 +40,12 @@ namespace trace
 		char const* _message, 
 		char const* _file, 
 		char const* _function, 
-		uint32_t _line,
+		uint16_t _line,
+		uint16_t _frame,
 		uint32_t _thread_id,
 		uint32_t _local_time )
 	{
 		if ( Backend* backend = BackendIfy( _handle ) )
-			backend->SendMessage( _type, _message, _file, _function, _line, _thread_id, _local_time );
+			backend->SendMessage( _type, _message, _file, _function, _line, _frame, _thread_id, _local_time );
 	}
 }

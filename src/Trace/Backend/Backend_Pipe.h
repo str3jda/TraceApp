@@ -14,7 +14,8 @@ namespace trace
 			char const* _message, 
 			char const* _file, 
 			char const* _function, 
-			uint32_t _line,
+			uint16_t _line,
+			uint16_t _frame,
 			uint32_t _thread_id,
 			uint32_t _local_time ) override final;
 
@@ -36,7 +37,8 @@ namespace trace
 
 		struct __attribute__((__packed__)) MsgHeader
 		{
-			uint32_t Line;
+			uint16_t Line;
+			uint16_t Frame;
 			uint32_t Thread;
 			uint32_t LocalTime;
 			uint16_t MsgLength;
@@ -51,7 +53,8 @@ namespace trace
 			char const* _message, 
 			char const* _file, 
 			char const* _function, 
-			uint32_t _line,
+			uint16_t _line,
+			uint16_t _frame,
 			uint32_t _thread_id,
 			uint32_t _local_time );
 

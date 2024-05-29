@@ -21,7 +21,8 @@
 //	'm': <string>, 		# Actual message
 //	'f': <string>,		# Code file, where message originates from
 //	'c': <string>,		# Function, where message originates from
-//	'l': <uint32_t>,	# Line number in code file
+//	'l': <uint16_t>,	# Line number in code file
+//	'r': <uint16_t>		# Frame time, helps by grouping messages within the same app frame
 //	't': <uint32_t>,	# Thread id (use with trace::send_thread_name() to give a thread real name)
 //	'i': <uint32_t>		# Local time, target app dependent (shown as simple number)
 //}
@@ -43,7 +44,8 @@ namespace trace
 			char const* _message, 
 			char const* _file, 
 			char const* _function, 
-			uint32_t _line,
+			uint16_t _line,
+			uint16_t _frame,
 			uint32_t _thread_id,
 			uint32_t _local_time ) override final;
 
@@ -67,7 +69,8 @@ namespace trace
 			char const* _message, 
 			char const* _file, 
 			char const* _function, 
-			uint32_t _line,
+			uint16_t _line,
+			uint16_t _frame,
 			uint32_t _thread_id,
 			uint32_t _local_time );
 

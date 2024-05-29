@@ -24,7 +24,8 @@ namespace trace
 			char const* _message, 
 			char const* _file, 
 			char const* _function, 
-			uint32_t _line,
+			uint16_t _line,
+			uint16_t _frame,
 			uint32_t _thread_id,
 			uint32_t _local_time ) = 0;
 
