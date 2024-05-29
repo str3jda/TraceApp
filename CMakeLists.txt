@@ -28,10 +28,6 @@ if ("mqtt" IN_LIST VCPKG_MANIFEST_FEATURES)
 	message(STATUS "[Trace] Support for MQTT")
 endif ()
 
-include(GenerateExportHeader)
-include(GNUInstallDirs)
-include(CMakePackageConfigHelpers)
-
 if (TRACE_SUPPORT_MQTT)
     find_package(eclipse-paho-mqtt-c CONFIG REQUIRED)
 endif ()
@@ -54,6 +50,7 @@ target_compile_options(trace
 
 target_compile_features(trace PRIVATE cxx_std_17)
 
+include(GenerateExportHeader)
 set_target_properties(trace 
     PROPERTIES 
         CXX_VISIBILITY_PRESET "hidden"
@@ -106,19 +103,15 @@ target_compile_definitions(trace PRIVATE
     $<$<BOOL:${TRACE_BACKEND_LISTENER}>:TRACE_BACKEND_LISTENER>
 )
 
-install(
-    TARGETS trace
-        LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
+include(GNUInstallDirs)
 
 install(
     TARGETS trace
-        EXPORT TraceTargets
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    EXPORT TraceTargets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
@@ -129,6 +122,8 @@ install(
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Trace
 )
 
+include(CMakePackageConfigHelpers)
+
 write_basic_package_version_file(
     "TraceConfigVersion.cmake"
     VERSION ${PROJECT_VERSION}
@@ -137,15 +132,22 @@ write_basic_package_version_file(
 configure_package_config_file(
     "${CMAKE_CURRENT_LIST_DIR}/cmake/TraceConfig.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/TraceConfig.cmake"
-    INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Trace
+    INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/trace/cmake
 )
+
+install(
+    FILES 
+        ${CMAKE_CURRENT_BINARY_DIR}/TraceConfig.cmake 
+        ${CMAKE_CURRENT_BINARY_DIR}/TraceConfigVersion.cmake
+    DESTINATION 
+        ${CMAKE_INSTALL_DATAROOTDIR}/trace/cmake)
 
 # install the CMake targets
 install(
     EXPORT TraceTargets
     FILE TraceTargets.cmake
     NAMESPACE trace::
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/Trace
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/trace/cmake
 )
 
 if (TRACE_BUILD_APP)
