@@ -36,7 +36,6 @@ namespace trace
 		BackendMQTT( MQTTClient_t _existing );
 		BackendMQTT( char const* _broker_address, char const* _client_id );
 
-		virtual bool Init( TraceAppID_t _app_id, SysEventCallback_t _sys_event_callback ) override;
 		virtual void Deinit() override;
 
 		virtual void SendMessage( 
@@ -86,7 +85,6 @@ namespace trace
 
 	private:
 
-		TraceAppID_t m_AppId;
 		MQTTClient m_MqttClient = nullptr;
 		bool const m_ClientOwned = false;
 

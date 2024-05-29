@@ -4,11 +4,6 @@ set_target_properties(app PROPERTIES OUTPUT_NAME "TraceApp")
 
 target_compile_features(app PUBLIC cxx_std_20)
 
-target_compile_options(app 
-    PRIVATE 
-        -fno-rtti
-)
-
 target_compile_definitions(app 
     PRIVATE
         $<$<BOOL:${TRACE_APP_THEME_BLACK}>:BLACK_THEME>

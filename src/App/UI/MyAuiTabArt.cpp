@@ -2,6 +2,7 @@
 #include <App/UI/MainWindow.h>
 #include <App/UI/ListView.h>
 #include <App/Theme.h>
+#include <bit>
 
 MyAuiTabArt::MyAuiTabArt( wxIcon _sys_tab_ico, wxIcon _sys_tab_active_ico )
 {

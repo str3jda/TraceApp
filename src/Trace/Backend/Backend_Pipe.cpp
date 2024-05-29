@@ -18,21 +18,24 @@ namespace trace
 		uint32_t written = Serialize( buffer, _type, _message, _file, _function, _line, _frame, _thread_id, _local_time );
 
 		if ( written != 0 )
-		{
 			Publish( buffer, written );
-		}
 	}
 
 #if TRACE_BACKEND_LISTENER
 	bool BackendPipe::PollMessage( Message& _out, ClientId& _out_source, uint32_t _timeout )
 	{
-		uint8_t buffer[MAX_PACKET_SIZE];
-		uint32_t packet_read = Poll( buffer, sizeof( buffer ), _timeout );
+		Poll( _timeout );
 
-		if ( packet_read == 0 )
+		if ( m_MessagesInFlightCount == 0 )
 			return false;
 
-		return Deserialize( buffer, packet_read, _out );
+		_out = std::move( m_MessagesInFlight[0].first );
+		_out_source.AppId = m_MessagesInFlight[0].second;
+
+		std::move( &m_MessagesInFlight[1], &m_MessagesInFlight[ m_MessagesInFlightCount ], &m_MessagesInFlight[0] );
+
+		--m_MessagesInFlightCount;
+		return true;
 	}
 #endif
 
@@ -66,6 +69,7 @@ namespace trace
 			return 0;
 
 		MsgHeader header;
+		header.AppId = m_AppId;
 		header.Type = static_cast< decltype( MsgHeader::Type ) >( _type );
 		header.Line = _line;
 		header.Frame = _frame;
@@ -102,7 +106,7 @@ namespace trace
 	}
 
 #if TRACE_BACKEND_LISTENER
-	bool BackendPipe::Deserialize( uint8_t const* _packet, uint32_t _packet_size, Message& _out_message )
+	bool BackendPipe::Deserialize( uint8_t const* _packet, uint32_t _packet_size, Message& _out_message, TraceAppID_t& _app_id )
 	{
 		constexpr size_t HeaderSize = sizeof( MsgHeader );
 
@@ -117,6 +121,8 @@ namespace trace
 
 		if ( _packet_size < HeaderSize + header.MsgLength + header.FileLength + header.FunctionLength )
 			return false;
+
+		_app_id = header.AppId;
 
 		_out_message.Type = static_cast< TracedMessageType_t >( header.Type );
 		_out_message.Line = header.Line;
@@ -150,6 +156,18 @@ namespace trace
 			_out_message.Function.clear();
 
 		return true;
+	}
+
+	void BackendPipe::OnNewMessage( uint8_t const* _packet, uint32_t _packet_size )
+	{
+		Message msg; 
+		TraceAppID_t app_id;
+
+		if ( Deserialize( _packet, _packet_size, msg, app_id ) )
+		{
+			if ( m_MessagesInFlightCount < MESSAGES_IN_FLIGHT_LIMIT )
+				m_MessagesInFlight[m_MessagesInFlightCount++] = { std::move( msg ), app_id };
+		}
 	}
 
 #endif

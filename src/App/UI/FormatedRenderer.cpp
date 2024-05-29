@@ -3,6 +3,7 @@
 #include <App/UI/UiMessage.h>
 #include <Trace/Message.h>
 #include <malloc.h>
+#include <bit>
 
 namespace details {
 

@@ -14,6 +14,10 @@ namespace trace
 
 	class BackendPipeImpl : public BackendPipe
 	{
+#if TRACE_BACKEND_LISTENER
+		struct PipeClient;
+#endif
+
 	public:
 
 		virtual void Deinit() override final
@@ -143,7 +147,7 @@ namespace trace
 			return { pipe, pending };
 		}
 
-		virtual uint32_t Poll( uint8_t* _packet, uint32_t _packet_size, uint32_t _timeout_ms ) override final
+		virtual void Poll( uint32_t _timeout_ms ) override final
 		{
 			if ( m_ConnectEvent == INVALID_HANDLE_VALUE )
 			{
@@ -179,30 +183,27 @@ namespace trace
 							FALSE );
 
 						if ( !success )
-							return 0;
+							break;
 					}
 
-					std::unique_ptr< PipeClient > client( new PipeClient{ *this, m_ConnectPipe } );
-					m_ConnectEvent = INVALID_HANDLE_VALUE;
+					std::unique_ptr< PipeClient > client = std::make_unique< PipeClient >( *this, m_ConnectPipe );
+					m_ConnectPipe = INVALID_HANDLE_VALUE;
 
 					PipeClient* client_ptr = client.get();
 					m_ReadClients.push_back( std::move( client ) );
 
-					CompletedReadRoutine( 0, 0, (LPOVERLAPPED)client_ptr );
-					
-					return true;
+					CompletedReadRoutine( 0, 0, (LPOVERLAPPED)client_ptr );					
+					break;
 				}
 
 				case WAIT_IO_COMPLETION:
-					 // The wait is satisfied by a completed read or write 
+					// The wait is satisfied by a completed read or write 
 					// operation. This allows the system to execute the 
 					// completion routine. 
 					break;
 				case WAIT_TIMEOUT:
 					break;
 			}
-
-			return false;
 		}
 
 		static void CompletedReadRoutine( DWORD dwErr, DWORD cbBytesRead, LPOVERLAPPED lpOverLap )
@@ -213,9 +214,7 @@ namespace trace
 			if ( dwErr == 0 )
 			{
 				if ( cbBytesRead != 0 )
-				{
-					// ....
-				}
+					client->m_Backend.OnNewMessage( reinterpret_cast< uint8_t const* >( &client->m_RecvBuffer[0] ), cbBytesRead );
 
 				ok = ReadFileEx(
 					client->m_ReadPipe,
@@ -227,13 +226,17 @@ namespace trace
 
 			if ( !ok )
 			{
-				// TODO: Is this thread safe?
 				for ( auto& cl : client->m_Backend.m_ReadClients )
 				{
 					if ( cl.get() == client )
 					{
-						cl = std::move( client->m_Backend.m_ReadClients.back() );
-						client->m_Backend.m_ReadClients.pop_back();
+						DisconnectNamedPipe( cl->m_ReadPipe );
+						CloseHandle( cl->m_ReadPipe ); 
+
+						BackendPipeImpl& backend = client->m_Backend;
+
+						cl = std::move( backend.m_ReadClients.back() );
+						backend.m_ReadClients.pop_back();
 
 						break;
 					}
@@ -261,14 +264,22 @@ namespace trace
 
 		bool m_ReadyToRecv = false;
 
-		struct PipeClient
+		struct PipeClient : public OVERLAPPED
 		{
+			PipeClient( BackendPipeImpl& _backend, HANDLE _read_pipe )
+				: m_Backend( _backend )
+				, m_ReadPipe( _read_pipe )
+			{
+				memset( this, 0, sizeof( OVERLAPPED ) );
+			}
+
 			BackendPipeImpl& m_Backend;
 			HANDLE m_ReadPipe = INVALID_HANDLE_VALUE;
 			uint32_t m_RecvBuffer[MAX_PACKET_SIZE];
 		};
 
-		std::vector< std::unique_ptr< PipeClient > > m_ReadClients;		
+		std::vector< std::unique_ptr< PipeClient > > m_ReadClients;	
+
 #endif
 
 	};
