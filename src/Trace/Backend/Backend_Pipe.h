@@ -36,7 +36,7 @@ namespace trace
 
 	private:
 
-		struct __attribute__((__packed__)) MsgHeader
+		struct MsgHeader
 		{
 			uint32_t AppId;
 			uint16_t Line;
@@ -47,6 +47,8 @@ namespace trace
 			uint16_t FileLength;
 			uint8_t FunctionLength;
 			uint8_t Type;
+
+			uint16_t _Unused;
 		};
 
 		uint32_t Serialize( 

@@ -1,21 +1,13 @@
 cmake_minimum_required(VERSION 3.3)
-project(
-	TraceApp 
-	VERSION 1.0.0
-	DESCRIPTION "Logging events from apps in a separate UI"
-	LANGUAGES CXX)
-
-set(CMAKE_DEBUG_POSTFIX d)
 
 option(TRACE_BUILD_APP "[Trace] Including UI app" OFF)
 option(TRACE_SUPPORT_PIPE "[Trace] Support for interprocess pipes" OFF)
 option(TRACE_SUPPORT_MQTT "[Trace] Support for MQTT" ON)
 
-set(TRACE_BACKEND_LISTENER TRACE_BUILD_APP)
-
 if (TRACE_BUILD_APP)
     message( "[Trace] Including UI app" )
     list(APPEND VCPKG_MANIFEST_FEATURES "app")
+    set(TRACE_BACKEND_LISTENER true)
 endif ()
 
 if (TRACE_SUPPORT_PIPE)
@@ -28,6 +20,14 @@ if (TRACE_SUPPORT_MQTT)
     message( "[Trace] Support for MQTT" )
     list(APPEND VCPKG_MANIFEST_FEATURES "mqtt")
 endif ()
+
+project(
+	TraceApp 
+	VERSION 1.0.0
+	DESCRIPTION "Logging events from apps in a separate UI"
+	LANGUAGES CXX)
+
+set(CMAKE_DEBUG_POSTFIX d)
 
 add_library(trace)
 add_library(trace::trace ALIAS trace)
