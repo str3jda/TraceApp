@@ -7,29 +7,26 @@ project(
 
 set(CMAKE_DEBUG_POSTFIX d)
 
-set(TRACE_BACKEND_LISTENER FALSE)
-set(TRACE_BUILD_APP FALSE)
-set(TRACE_SUPPORT_PIPE FALSE)
-set(TRACE_SUPPORT_MQTT FALSE)
+option(TRACE_BUILD_APP "[Trace] Including UI app" OFF)
+option(TRACE_SUPPORT_PIPE "[Trace] Support for interprocess pipes" OFF)
+option(TRACE_SUPPORT_MQTT "[Trace] Support for MQTT" ON)
 
-if ("app" IN_LIST VCPKG_MANIFEST_FEATURES)
-	set(TRACE_BUILD_APP TRUE)
-	set(TRACE_BACKEND_LISTENER TRUE)
-	message(STATUS "[Trace] Including UI app")
+set(TRACE_BACKEND_LISTENER TRACE_BUILD_APP)
+
+if (TRACE_BUILD_APP)
+    message( "[Trace] Including UI app" )
+    list(APPEND VCPKG_MANIFEST_FEATURES "app")
 endif ()
 
-if ("pipe" IN_LIST VCPKG_MANIFEST_FEATURES)
-	set(TRACE_SUPPORT_PIPE TRUE)
-	message(STATUS "[Trace] Support for interprocess pipes")
-endif ()
-
-if ("mqtt" IN_LIST VCPKG_MANIFEST_FEATURES)
-	set(TRACE_SUPPORT_MQTT TRUE)
-	message(STATUS "[Trace] Support for MQTT")
+if (TRACE_SUPPORT_PIPE)
+    message( "[Trace] Support for interprocess pipes" )
+	list(APPEND VCPKG_MANIFEST_FEATURES "pipe")
 endif ()
 
 if (TRACE_SUPPORT_MQTT)
     find_package(eclipse-paho-mqtt-c CONFIG REQUIRED)
+    message( "[Trace] Support for MQTT" )
+    list(APPEND VCPKG_MANIFEST_FEATURES "mqtt")
 endif ()
 
 add_library(trace)
