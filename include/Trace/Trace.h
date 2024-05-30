@@ -49,7 +49,10 @@ namespace trace
 
 #ifdef TRACE_SUPPORT_PIPE
 	// Initializes trace library with IPC pipe connection (only works if client is on the same machine)
-	TRACE_EXPORT TraceHandle_t initialize_pipe( TraceAppID_t _app_id, char const* _process_name = nullptr );
+	TRACE_EXPORT TraceHandle_t initialize_pipe( 
+		TraceAppID_t _app_id, 
+		char const* _process_name = nullptr, 
+		SysEventCallback_t _callback = nullptr );
 #endif
 
 	TRACE_EXPORT void deinitialize( TraceHandle_t _handle );
