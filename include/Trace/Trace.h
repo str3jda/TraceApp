@@ -67,8 +67,8 @@ namespace trace
 		char const* _file = nullptr, 
 		char const* _function = nullptr, 
 		uint16_t _line = 0,
-		uint16_t _thread_id = 0,
+		uint32_t _thread_id = 0,
 		uint32_t _local_time = 0,
-		uint32_t _frame = 0 );
+		uint16_t _frame = 0 );
 
 }

@@ -41,9 +41,9 @@ namespace trace
 		char const* _file, 
 		char const* _function, 
 		uint16_t _line,
-		uint16_t _thread_id,
+		uint32_t _thread_id,
 		uint32_t _local_time,
-		uint32_t _frame )
+		uint16_t _frame )
 	{
 		if ( Backend* backend = BackendIfy( _handle ) )
 			backend->SendMessage( _type, _message, _file, _function, _line, _frame, _thread_id, _local_time );
