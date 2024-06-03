@@ -145,7 +145,7 @@ void C_MessagePump::RetrieveMessages( T_MessageCallback clbk )
 		}
 	}
 #endif
-#if 1
+#if 0
 	{
 		auto add = [&clbk](auto t, char const* m, uint32_t app)
 		{

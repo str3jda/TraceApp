@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.3)
 
+include(CMakeDependentOption)
+
 option(TRACE_BUILD_APP "[Trace] Including UI app" OFF)
 option(TRACE_SUPPORT_PIPE "[Trace] Support for interprocess pipes" OFF)
 option(TRACE_SUPPORT_MQTT "[Trace] Support for MQTT" ON)
+
+cmake_dependent_option(TRACE_USE_POSTFIX
+  "Use postfix for each configuration to make sure you can install multiple build outputs" OFF
+  "CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR" OFF)
 
 if (TRACE_BUILD_APP)
     message( "[Trace] Including UI app" )
@@ -27,7 +33,11 @@ project(
 	DESCRIPTION "Logging events from apps in a separate UI"
 	LANGUAGES CXX)
 
-set(CMAKE_DEBUG_POSTFIX d)
+if (TRACE_USE_POSTFIX)
+    set(CMAKE_RELWITHDEBINFO_POSTFIX r)
+    set(CMAKE_MINSIZEREL_POSTFIX m)
+    set(CMAKE_DEBUG_POSTFIX d)
+endif()
 
 add_library(trace)
 add_library(trace::trace ALIAS trace)

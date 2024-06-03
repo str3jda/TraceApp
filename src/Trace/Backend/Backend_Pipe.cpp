@@ -59,13 +59,13 @@ namespace trace
 		if ( HeaderSize + lenMsg + lenFile + lenFn > MAX_PACKET_SIZE )
 			return 0;
 
-		if ( lenMsg > sizeof( MsgHeader::MsgLength ) )
+		if ( lenMsg > std::numeric_limits< decltype( MsgHeader::MsgLength ) >::max() )
 			return 0;
 
-		if ( lenFile > sizeof( MsgHeader::FileLength ) )
+		if ( lenFile > std::numeric_limits< decltype( MsgHeader::FileLength ) >::max() )
 			return 0;
 
-		if ( lenFn > sizeof( MsgHeader::FunctionLength ) )
+		if ( lenFn > std::numeric_limits< decltype( MsgHeader::FunctionLength ) >::max() )
 			return 0;
 
 		MsgHeader header;
