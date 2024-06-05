@@ -1,5 +1,8 @@
 #pragma once
 #include <Trace/Backend.h>
+#if TRACE_BACKEND_LISTENER
+#	include <queue>
+#endif
 
 namespace trace
 {
@@ -69,11 +72,7 @@ namespace trace
 	private:
 
 #if TRACE_BACKEND_LISTENER
-
-		static constexpr uint32_t MESSAGES_IN_FLIGHT_LIMIT = 8;
-
-		std::pair< Message, TraceAppID_t > m_MessagesInFlight[MESSAGES_IN_FLIGHT_LIMIT];
-		uint32_t m_MessagesInFlightCount = 0;
+		std::queue< std::pair< Message, TraceAppID_t > > m_MessagesInFlight;
 #endif
 	};
 }

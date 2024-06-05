@@ -24,17 +24,16 @@ namespace trace
 #if TRACE_BACKEND_LISTENER
 	bool BackendPipe::PollMessage( Message& _out, ClientId& _out_source, uint32_t _timeout )
 	{
-		Poll( _timeout );
+		Poll( m_MessagesInFlight.empty() ? _timeout : 0 );
 
-		if ( m_MessagesInFlightCount == 0 )
+		if ( m_MessagesInFlight.empty() )
 			return false;
 
-		_out = std::move( m_MessagesInFlight[0].first );
-		_out_source.AppId = m_MessagesInFlight[0].second;
+		auto& x = m_MessagesInFlight.front();
+		_out = std::move( x.first );
+		_out_source.AppId = x.second;
 
-		std::move( &m_MessagesInFlight[1], &m_MessagesInFlight[ m_MessagesInFlightCount ], &m_MessagesInFlight[0] );
-
-		--m_MessagesInFlightCount;
+		m_MessagesInFlight.pop();
 		return true;
 	}
 #endif
@@ -164,10 +163,7 @@ namespace trace
 		TraceAppID_t app_id;
 
 		if ( Deserialize( _packet, _packet_size, msg, app_id ) )
-		{
-			if ( m_MessagesInFlightCount < MESSAGES_IN_FLIGHT_LIMIT )
-				m_MessagesInFlight[m_MessagesInFlightCount++] = { std::move( msg ), app_id };
-		}
+			m_MessagesInFlight.push( { std::move( msg ), app_id } );
 	}
 
 #endif
