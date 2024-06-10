@@ -117,14 +117,14 @@ install(
     TARGETS trace
     EXPORT TraceTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-            COMPONENT Trace_Runtime
+#            COMPONENT Trace_Runtime
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
             COMPONENT Trace_Runtime
-            NAMELINK_COMPONENT Trace_Development
+#            NAMELINK_COMPONENT Trace_Development
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            COMPONENT Trace_Development
+#            COMPONENT Trace_Development
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-            COMPONENT Trace_Development
+#            COMPONENT Trace_Development
 )
 
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
