@@ -22,7 +22,6 @@ if (TRACE_SUPPORT_PIPE)
 endif ()
 
 if (TRACE_SUPPORT_MQTT)
-    find_package(eclipse-paho-mqtt-c CONFIG REQUIRED)
     message( "[Trace] Support for MQTT" )
     list(APPEND VCPKG_MANIFEST_FEATURES "mqtt")
 endif ()
@@ -87,6 +86,8 @@ target_sources(trace
 if (TRACE_SUPPORT_MQTT)
     target_sources(trace PRIVATE src/Trace/Backend/Backend_MQTT.cpp)
     target_compile_definitions(trace PUBLIC TRACE_SUPPORT_MQTT)
+
+    find_package(eclipse-paho-mqtt-c CONFIG REQUIRED)
 
     target_link_libraries(trace 
         PRIVATE 
