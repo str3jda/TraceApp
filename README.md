@@ -1,1 +1,1 @@
-# TraceServer
+Logging in external application, which your app connects to via either OS pipes or MQTT broker
