@@ -1,8 +1,10 @@
 #include <Trace/Backend/Backend_Pipe.h>
 #include <Trace/Config.h>
-#include <vector>
-#include <memory>
-#include <tuple>
+#if TRACE_BACKEND_LISTENER
+#	include <vector>
+#	include <memory>
+#	include <tuple>
+#endif
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

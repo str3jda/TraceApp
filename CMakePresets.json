@@ -9,8 +9,6 @@
             "generator": "Ninja",
             "cacheVariables": 
             {
-                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-                "VCPKG_OVERLAY_TRIPLETS": "community",
                 "CMAKE_CXX_COMPILER": "clang++",
                 "CMAKE_C_COMPILER": "clang",
                 "TRACE_APP_THEME_BLACK": true,

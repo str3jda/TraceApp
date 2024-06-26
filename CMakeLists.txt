@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.3)
 
+include("cmake/cpm.cmake")
 include(CMakeDependentOption)
 
 option(TRACE_BUILD_APP "[Trace] Including UI app" OFF)
@@ -10,20 +11,19 @@ cmake_dependent_option(TRACE_USE_POSTFIX
   "Use postfix for each configuration to make sure you can install multiple build outputs" OFF
   "CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR" OFF)
 
+set(TRACE_BACKEND_LISTENER false)
+
 if (TRACE_BUILD_APP)
     message( "[Trace] Including UI app" )
-    list(APPEND VCPKG_MANIFEST_FEATURES "app")
     set(TRACE_BACKEND_LISTENER true)
 endif ()
 
 if (TRACE_SUPPORT_PIPE)
     message( "[Trace] Support for interprocess pipes" )
-	list(APPEND VCPKG_MANIFEST_FEATURES "pipe")
 endif ()
 
 if (TRACE_SUPPORT_MQTT)
     message( "[Trace] Support for MQTT" )
-    list(APPEND VCPKG_MANIFEST_FEATURES "mqtt")
 endif ()
 
 project(
@@ -86,12 +86,20 @@ target_sources(trace
 if (TRACE_SUPPORT_MQTT)
     target_sources(trace PRIVATE src/Trace/Backend/Backend_MQTT.cpp)
     target_compile_definitions(trace PUBLIC TRACE_SUPPORT_MQTT)
-
-    find_package(eclipse-paho-mqtt-c CONFIG REQUIRED)
+    
+    CPMAddPackage(
+        NAME paho-mqtt
+        GITHUB_REPOSITORY eclipse/paho.mqtt.c
+        GIT_TAG v1.3.13
+        OPTIONS
+            "PAHO_BUILD_STATIC ON"
+            "PAHO_BUILD_SHARED OFF"
+            "PAHO_ENABLE_TESTING OFF"
+    )
 
     target_link_libraries(trace 
-        PRIVATE 
-            eclipse-paho-mqtt-c::paho-mqtt3c-static
+        PUBLIC 
+            paho-mqtt3c-static
     )
 endif ()
 
@@ -108,7 +116,7 @@ endif ()
 target_compile_definitions(trace PRIVATE
     $<$<PLATFORM_ID:Windows>:TS_PLATFORM_WINDOWS>
     $<$<PLATFORM_ID:Linux>:TS_PLATFORM_LINUX>
-    $<$<BOOL:${TRACE_BACKEND_LISTENER}>:TRACE_BACKEND_LISTENER>
+    TRACE_BACKEND_LISTENER=${TRACE_BACKEND_LISTENER}
 )
 
 include(GNUInstallDirs)

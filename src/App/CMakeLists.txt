@@ -29,7 +29,13 @@ target_include_directories(app
 		${CMAKE_SOURCE_DIR}/include
 )
 
-find_package(wxWidgets CONFIG REQUIRED)
+CPMAddPackage(
+	NAME wxWidgets
+	GITHUB_REPOSITORY wxWidgets/wxWidgets
+	GIT_TAG v3.2.5
+	OPTIONS
+		"wxBUILD_SHARED OFF"
+)
 
 target_link_libraries(app 
 	PUBLIC
