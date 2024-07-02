@@ -15,7 +15,6 @@
 
 #define SETTINGS_CFG_FILE "setings.trace"
 
-
 ///////////////////////////////////////////////////////////////
 
 wxBEGIN_EVENT_TABLE(C_MainWindow, wxFrame)
@@ -26,7 +25,7 @@ wxEND_EVENT_TABLE()
 ///////////////////////////////////////////////////////////////
 
 C_MainWindow::C_MainWindow()
-    : wxFrame(nullptr, wxID_ANY, "Trace App", wxPoint(50, 50), wxSize(950, 340), wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX|wxCLIP_CHILDREN|wxTAB_TRAVERSAL )
+    : wxFrame(nullptr, wxID_ANY, "Trace App " TRACE_VERSION, wxPoint(50, 50), wxSize(950, 340), wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX|wxCLIP_CHILDREN|wxTAB_TRAVERSAL )
 	, m_Tray( this )
 	, m_MsgFilter( new MsgFilter() )
 	, m_UiThreadId( std::this_thread::get_id() )

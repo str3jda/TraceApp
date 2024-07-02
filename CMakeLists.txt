@@ -28,7 +28,7 @@ endif ()
 
 project(
 	TraceApp 
-	VERSION 1.0.0
+	VERSION 1.0.1
 	DESCRIPTION "Logging events from apps in a separate UI"
 	LANGUAGES CXX)
 

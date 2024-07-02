@@ -8,6 +8,7 @@ target_compile_definitions(app
     PRIVATE
         $<$<BOOL:${TRACE_APP_THEME_BLACK}>:BLACK_THEME>
 		$<$<BOOL:${TRACE_BACKEND_LISTENER}>:TRACE_BACKEND_LISTENER>
+		TRACE_VERSION="${PROJECT_VERSION}"
 )
 
 target_include_directories(app PRIVATE "${PROJECT_SOURCE_DIR}/src")
