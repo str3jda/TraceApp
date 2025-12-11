@@ -2,6 +2,7 @@
 #include <App/UI/ListView.h>
 #include <App/UI/TabModel.h>
 #include <App/UI/FormatedRenderer.h>
+#include <bit>
 
 wxBEGIN_EVENT_TABLE( ListView, wxDataViewCtrl )
 	EVT_KEY_DOWN( ListView::OnKeyDown )

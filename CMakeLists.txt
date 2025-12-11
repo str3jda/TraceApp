@@ -54,7 +54,7 @@ target_compile_options(trace
         #-Werror
 )
 
-target_compile_features(trace PRIVATE cxx_std_17)
+target_compile_features(trace PRIVATE cxx_std_20)
 
 include(GenerateExportHeader)
 set_target_properties(trace 
