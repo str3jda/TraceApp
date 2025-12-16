@@ -38,6 +38,11 @@ CPMAddPackage(
 		"wxBUILD_SHARED OFF"
 )
 
+target_compile_options(wxcore PRIVATE -w)
+target_compile_options(wxbase PRIVATE -w)
+target_compile_options(wxaui PRIVATE -w)
+target_compile_options(wxrichtext PRIVATE -w)
+
 target_link_libraries(app 
 	PUBLIC
 		trace
