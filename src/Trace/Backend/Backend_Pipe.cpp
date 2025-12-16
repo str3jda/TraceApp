@@ -1,5 +1,8 @@
 #include <Trace/Backend/Backend_Pipe.h>
 #include <Trace/Config.h>
+#include <string.h>
+#include <cstring>
+#include <limits>
 
 namespace trace
 {

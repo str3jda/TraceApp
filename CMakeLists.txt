@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.5)
 
 include("cmake/cpm.cmake")
 include(CMakeDependentOption)
@@ -28,7 +28,7 @@ endif ()
 
 project(
 	TraceApp 
-	VERSION 1.0.1
+	VERSION 1.0.2
 	DESCRIPTION "Logging events from apps in a separate UI"
 	LANGUAGES CXX)
 
@@ -90,12 +90,15 @@ if (TRACE_SUPPORT_MQTT)
     CPMAddPackage(
         NAME paho-mqtt
         GITHUB_REPOSITORY eclipse/paho.mqtt.c
-        GIT_TAG v1.3.13
+        GIT_TAG v1.3.15
         OPTIONS
             "PAHO_BUILD_STATIC ON"
             "PAHO_BUILD_SHARED OFF"
             "PAHO_ENABLE_TESTING OFF"
     )
+
+    target_compile_options(paho-mqtt3a-static PRIVATE -w)
+    target_compile_options(paho-mqtt3c-static PRIVATE -w)
 
     target_link_libraries(trace 
         PUBLIC 
