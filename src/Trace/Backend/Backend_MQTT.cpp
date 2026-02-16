@@ -1,6 +1,8 @@
 #include <Trace/Backend/Backend_MQTT.h>
 #include <Trace/Config.h>
 #include <charconv>
+#include <cstring>
+#include <algorithm>
 
 namespace trace
 {
